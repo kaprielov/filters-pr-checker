@@ -1,0 +1,30 @@
+name: 'filters-pr-checker'
+description: 'Checks filters pull requests'
+branding:
+  icon: check
+  color: yellow
+inputs:
+  repo_token:
+    description: 'github token'
+    required: true
+  imgur_client_id:
+    description: 'imgur client id'
+    required: true
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Install dependencies'
+      working-directory: ${{github.action_path}}
+      run: yarn install --frozen-lockfile
+      shell: bash
+    - name: 'Install playwright'
+      working-directory: ${{github.action_path}}
+      run: npx playwright install --with-deps chromium
+      shell: bash
+    - name: 'Run action'
+      working-directory: ${{github.action_path}}
+      run: xvfb-run node dist/index.js
+      shell: bash
+      env:
+        INPUT_REPO_TOKEN: ${{ inputs.repo_token }}
+        INPUT_IMGUR_CLIENT_ID: ${{ inputs.imgur_client_id }}
