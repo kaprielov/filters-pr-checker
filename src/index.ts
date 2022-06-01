@@ -8,7 +8,7 @@ import { screenshot } from './screenshot';
 import { extension } from './extension';
 
 // eslint-disable-next-line no-useless-escape
-const REGEXP_URL = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)$/;
 
 /**
  * - gets filter before pr
@@ -71,6 +71,7 @@ const run = async () => {
             issueNumber: pullNumber,
             body,
         });
+        throw new Error('Invalid URL format');
     }
 
     const context = await extension.start();
