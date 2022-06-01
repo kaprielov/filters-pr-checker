@@ -7,8 +7,7 @@ import { getUrlFromDescription } from './helpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
-// eslint-disable-next-line no-useless-escape
-const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)$/;
+const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_+.~#()?&//=]*)$/;
 
 const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request';
 
@@ -38,6 +37,12 @@ const run = async () => {
         throw new Error('Pull request description is required');
     }
 
+    const url = getUrlFromDescription(prInfo.body);
+
+    if (!url) {
+        throw new Error('URL in the pull request is required');
+    }
+
     const pullRequestFiles = await github.getPullRequestFiles({
         owner,
         repo,
@@ -57,12 +62,6 @@ const run = async () => {
         path: pullRequestFiles[0],
         ref: prInfo.head.sha,
     });
-
-    const url = getUrlFromDescription(prInfo.body);
-
-    if (!url) {
-        throw new Error('URL in the pull request is required');
-    }
 
     const setMessage = (result: string) => {
         return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
