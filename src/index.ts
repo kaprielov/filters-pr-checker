@@ -7,6 +7,9 @@ import { getUrlFromDescription } from './helpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
+// eslint-disable-next-line no-useless-escape
+const REGEXP_URL = /^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+
 /**
  * - gets filter before pr
  * - makes screenshot before.jpg
@@ -54,6 +57,22 @@ const run = async () => {
         throw new Error('URL in the pull request is required');
     }
 
+    let result;
+    let error;
+    const failed = `The filters PR checker failed to check this pull request${error ? `due to ${error}` : ''}`;
+    const body = `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+
+    if (!url.match(REGEXP_URL)) {
+        result = failed;
+        error = 'an invalid url format';
+        await github.createComment({
+            repo,
+            owner,
+            issueNumber: pullNumber,
+            body,
+        });
+    }
+
     const context = await extension.start();
 
     await extension.config(context, baseFileContent.toString());
@@ -71,11 +90,11 @@ const run = async () => {
 
     const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules:: ![headScreenshot](${headLink})`;
 
-    const fail = 'The filters PR checker failed to check this pull request';
+    if (!baseLink || !headLink) {
+        error = 'images url was not received';
+    }
 
-    const result = baseLink && headLink ? success : fail;
-
-    const body = `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+    result = baseLink || headLink ? success : fail;
 
     await github.createComment({
         repo,
