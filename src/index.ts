@@ -69,7 +69,13 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const body = `before: ![baseScreenshot](${baseLink}) \r\nafter: ![headScreenshot](${headLink})`;
+    const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules:: ![headScreenshot](${headLink})`;
+
+    const fail = 'The filters PR checker failed to check this pull request';
+
+    const result = baseLink && headLink ? success : fail;
+
+    const body = `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
 
     await github.createComment({
         repo,
