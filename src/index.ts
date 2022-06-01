@@ -7,6 +7,16 @@ import { getUrlFromDescription } from './helpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
+// eslint-disable-next-line no-useless-escape
+const REGEXP_URL = /^https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#()?&//=]*)$/;
+
+const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request';
+
+const ERRORS_MESSAGES = {
+    INVALID_URL: `${BASE_ERROR_MESSAGE} due to invalid URL format`,
+    SCREENSHOT_NOT_UPLOAD: `${BASE_ERROR_MESSAGE} due to no screenshots were received`,
+};
+
 /**
  * - gets filter before pr
  * - makes screenshot before.jpg
@@ -54,6 +64,21 @@ const run = async () => {
         throw new Error('URL in the pull request is required');
     }
 
+    const setMessage = (result: string) => {
+        return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+    };
+
+    if (!url.match(REGEXP_URL)) {
+        const body = setMessage(ERRORS_MESSAGES.INVALID_URL);
+        await github.createComment({
+            repo,
+            owner,
+            issueNumber: pullNumber,
+            body,
+        });
+        throw new Error('Invalid URL format');
+    }
+
     const context = await extension.start();
 
     await extension.config(context, baseFileContent.toString());
@@ -71,11 +96,13 @@ const run = async () => {
 
     const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules:: ![headScreenshot](${headLink})`;
 
-    const fail = 'The filters PR checker failed to check this pull request';
+    let body;
 
-    const result = baseLink && headLink ? success : fail;
-
-    const body = `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+    if (!baseLink || !headLink) {
+        body = setMessage(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
+    } else {
+        body = setMessage(success);
+    }
 
     await github.createComment({
         repo,
