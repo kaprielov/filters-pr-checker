@@ -1,12 +1,12 @@
-export const getValueFromDescription = (desc: string, mark: string): string | null => {
+export const getValueFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
     const lines = rawLines.map((line) => line.trim());
-    const lineWithUrl = lines.find((line) => line.trim().startsWith(mark));
-    if (!lineWithUrl) {
+    const lineWithKey = lines.find((line) => line.trim().startsWith(key));
+    if (!lineWithKey) {
         return null;
     }
 
-    const rawUrl = lineWithUrl.substring(mark.length);
+    const rawUrl = lineWithKey.substring(key.length);
     const value = rawUrl.trim();
     return value;
 };
