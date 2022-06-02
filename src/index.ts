@@ -9,11 +9,11 @@ import { extension } from './extension';
 
 const REGEXP_PROTOCOL = /^https?/;
 
-const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request';
+const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request due to';
 
 const ERRORS_MESSAGES = {
-    INVALID_URL: `${BASE_ERROR_MESSAGE} due to invalid URL format`,
-    SCREENSHOT_NOT_UPLOAD: `${BASE_ERROR_MESSAGE} due to no screenshots were received`,
+    INVALID_URL: 'invalid URL format',
+    SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
 };
 
 const setMessage = (result: string) => {
@@ -107,7 +107,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `${setMessage(e.message)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
+        const body = `${setMessage(`${BASE_ERROR_MESSAGE} ${e.message}`)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
 
         await github.createComment({
             repo,
