@@ -106,11 +106,9 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const error = e.replace('Error: ', '');
-        const printErrorComment = Object.values(ERRORS_MESSAGES).includes(error);
-
+        const printErrorComment = Object.values(ERRORS_MESSAGES).includes(e.message);
         if (printErrorComment) {
-            const body = setMessage(e);
+            const body = setMessage(e.message);
 
             await github.createComment({
                 repo,
