@@ -106,18 +106,15 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const errorInComment = Object.values(ERRORS_MESSAGES).includes(e);
+        const body = setMessage(e);
 
-        if (errorInComment) {
-            const body = setMessage(e);
+        await github.createComment({
+            repo,
+            owner,
+            issueNumber: pullNumber,
+            body,
+        });
 
-            await github.createComment({
-                repo,
-                owner,
-                issueNumber: pullNumber,
-                body,
-            });
-        }
         core.setFailed(e.message);
     }
 })();
