@@ -3,20 +3,15 @@ import 'dotenv/config';
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { github, imgur } from './api';
-import { getUrlFromDescription } from './helpers';
+import { getValueFromDescription } from './helpers';
+import {
+    URL_MARK,
+    REGEXP_PROTOCOL,
+    ERRORS_MESSAGES,
+    BASE_ERROR_MESSAGE,
+} from './constants';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
-
-const REGEXP_PROTOCOL = /^https?/;
-
-const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request due to';
-
-const ERRORS_MESSAGES = {
-    INVALID_URL: 'invalid URL format',
-    SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
-    PR_DESC_REQUIRED: 'pull request description is required',
-    URL_REQUEST_REQUIRED: 'URL in the pull request is required',
-};
 
 const setMessage = (result: string) => {
     return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
@@ -44,7 +39,7 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    const url = getUrlFromDescription(prInfo.body);
+    const url = getValueFromDescription(prInfo.body, URL_MARK);
 
     if (!url) {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
