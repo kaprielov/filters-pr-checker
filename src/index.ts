@@ -10,6 +10,7 @@ import {
     DEFAULT_MESSAGE,
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
+    FILTER_LIST_MARK,
 } from './constants';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -51,6 +52,16 @@ const run = async () => {
         repo,
         pullNumber,
     });
+
+    core.setOutput('pullRequestFiles', pullRequestFiles);
+
+    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
+
+    if (filterList) {
+        // eslint-disable-next-line max-len
+        const targetFiles = pullRequestFiles.filter((fileName) => filterList.find((filter) => fileName === filter));
+        core.setOutput('targetFiles', targetFiles);
+    }
 
     const baseFileContent = await github.getContent({
         owner: prInfo.base.owner,
