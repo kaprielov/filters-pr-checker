@@ -7,6 +7,7 @@ import { getValueFromDescription } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
+    DEFAULT_MESSAGE,
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
 } from './constants';
@@ -14,7 +15,7 @@ import { screenshot } from './screenshot';
 import { extension } from './extension';
 
 const setMessage = (result: string) => {
-    return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+    return `${DEFAULT_MESSAGE} \r\n${result}`;
 };
 
 const { runId } = gh.context;
