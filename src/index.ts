@@ -16,6 +16,13 @@ const ERRORS_MESSAGES = {
     SCREENSHOT_NOT_UPLOAD: `${BASE_ERROR_MESSAGE} due to no screenshots were received`,
 };
 
+const setMessage = (result: string) => {
+    return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
+};
+
+const { owner, repo } = gh.context.repo;
+const pullNumber = gh.context.payload.number;
+
 /**
  * - gets filter before pr
  * - makes screenshot before.jpg
@@ -24,9 +31,6 @@ const ERRORS_MESSAGES = {
  * - appends screenshots in comment to current pr
  */
 const run = async () => {
-    const { owner, repo } = gh.context.repo;
-    const pullNumber = gh.context.payload.number;
-
     const prInfo = await github.getPullRequest({
         owner,
         repo,
@@ -63,19 +67,8 @@ const run = async () => {
         ref: prInfo.head.sha,
     });
 
-    const setMessage = (result: string) => {
-        return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
-    };
-
     if (!url.match(REGEXP_PROTOCOL)) {
-        const body = setMessage(ERRORS_MESSAGES.INVALID_URL);
-        await github.createComment({
-            repo,
-            owner,
-            issueNumber: pullNumber,
-            body,
-        });
-        throw new Error('Invalid URL format');
+        throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
 
     const context = await extension.start();
@@ -95,13 +88,11 @@ const run = async () => {
 
     const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
 
-    let body;
-
     if (!baseLink || !headLink) {
-        body = setMessage(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
-    } else {
-        body = setMessage(success);
+        throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
     }
+
+    const body = setMessage(success);
 
     await github.createComment({
         repo,
@@ -115,6 +106,18 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
+        const errorInComment = Object.values(ERRORS_MESSAGES).includes(e);
+
+        if (errorInComment) {
+            const body = setMessage(e);
+
+            await github.createComment({
+                repo,
+                owner,
+                issueNumber: pullNumber,
+                body,
+            });
+        }
         core.setFailed(e.message);
     }
 })();
