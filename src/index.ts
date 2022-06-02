@@ -106,8 +106,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const exceptErrorRegexp = /(?!Error: \b)\b\w+/;
-        const error = e.match(exceptErrorRegexp);
+        const error = e.replace('Error: ', '');
         const printErrorComment = Object.values(ERRORS_MESSAGES).includes(error);
 
         if (printErrorComment) {
