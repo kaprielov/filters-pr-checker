@@ -12,8 +12,8 @@ const REGEXP_PROTOCOL = /^https?/;
 const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request due to';
 
 const ERRORS_MESSAGES = {
-    INVALID_URL: 'invalid URL format',
-    SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
+    INVALID_URL: 'Invalid URL format',
+    SCREENSHOT_NOT_UPLOAD: 'No screenshots were received',
 };
 
 const setMessage = (result: string) => {
@@ -107,7 +107,8 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `${setMessage(`${BASE_ERROR_MESSAGE} ${e.message}`)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
+        const error = e.message[0].toLowerCase() + e.message.slice(1);
+        const body = `${setMessage(`${BASE_ERROR_MESSAGE} ${error}`)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
 
         await github.createComment({
             repo,
