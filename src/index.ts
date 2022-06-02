@@ -109,6 +109,10 @@ const run = async () => {
         const error = e.replace('Error: ', '');
         const printErrorComment = Object.values(ERRORS_MESSAGES).includes(error);
 
+        core.setOutput('error', error);
+
+        core.setOutput('printErrorComment', printErrorComment);
+
         if (printErrorComment) {
             const body = setMessage(e);
 
