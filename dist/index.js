@@ -1136,7 +1136,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"getValueFromDescription\": () => (/* binding */ getValueFromDescription)\n/* harmony export */ });\nconst getValueFromDescription = (desc, mark)=>{\n    const rawLines = desc.split(\"\\n\");\n    const lines = rawLines.map((line)=>line.trim()\n    );\n    const lineWithUrl = lines.find((line)=>line.trim().startsWith(mark)\n    );\n    if (!lineWithUrl) {\n        return null;\n    }\n    const rawUrl = lineWithUrl.substring(mark.length);\n    const value = rawUrl.trim();\n    return value;\n};\n\n\n//# sourceURL=webpack://filters-pr-checker/./src/helpers.ts?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"getValueFromDescription\": () => (/* binding */ getValueFromDescription)\n/* harmony export */ });\nconst getValueFromDescription = (desc, key)=>{\n    const rawLines = desc.split(\"\\n\");\n    const lines = rawLines.map((line)=>line.trim()\n    );\n    const lineWithKey = lines.find((line)=>line.trim().startsWith(key)\n    );\n    if (!lineWithKey) {\n        return null;\n    }\n    const rawUrl = lineWithKey.substring(key.length);\n    const value = rawUrl.trim();\n    return value;\n};\n\n\n//# sourceURL=webpack://filters-pr-checker/./src/helpers.ts?");
 
 /***/ }),
 
