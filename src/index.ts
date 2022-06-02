@@ -106,9 +106,11 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const errorInComment = Object.values(ERRORS_MESSAGES).includes(`Error: ${e}`);
+        const exceptErrorRegexp = /(?!Error: \b)\b\w+/;
+        const error = e.match(exceptErrorRegexp);
+        const printErrorComment = Object.values(ERRORS_MESSAGES).includes(error);
 
-        if (errorInComment) {
+        if (printErrorComment) {
             const body = setMessage(e);
 
             await github.createComment({
