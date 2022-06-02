@@ -20,6 +20,7 @@ const setMessage = (result: string) => {
     return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
 };
 
+const { runId } = gh.context;
 const { owner, repo } = gh.context.repo;
 const pullNumber = gh.context.payload.number;
 
@@ -106,17 +107,14 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const printErrorComment = Object.values(ERRORS_MESSAGES).includes(e.message);
-        if (printErrorComment) {
-            const body = setMessage(e.message);
+        const body = `${setMessage(e.message)} \r\n[](https://github.com/${repo}/actions/runs/${runId})`;
 
-            await github.createComment({
-                repo,
-                owner,
-                issueNumber: pullNumber,
-                body,
-            });
-        }
+        await github.createComment({
+            repo,
+            owner,
+            issueNumber: pullNumber,
+            body,
+        });
         core.setFailed(e.message);
     }
 })();
