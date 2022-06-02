@@ -1,1 +1,1 @@
-ya.ru##div > h1
+!ya.ru##div > h1
