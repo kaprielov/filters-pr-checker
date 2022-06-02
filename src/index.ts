@@ -107,7 +107,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `${setMessage(e.message)} \r\n[](https://github.com/${repo}/actions/runs/${runId})`;
+        const body = `${setMessage(e.message)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
 
         await github.createComment({
             repo,
