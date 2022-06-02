@@ -9,11 +9,13 @@ import { extension } from './extension';
 
 const REGEXP_PROTOCOL = /^https?/;
 
-const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request';
+const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request due to';
 
 const ERRORS_MESSAGES = {
-    INVALID_URL: `${BASE_ERROR_MESSAGE} due to invalid URL format`,
-    SCREENSHOT_NOT_UPLOAD: `${BASE_ERROR_MESSAGE} due to no screenshots were received`,
+    INVALID_URL: 'invalid URL format',
+    SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
+    PR_DESC_REQUIRED: 'pull request description is required',
+    URL_REQUEST_REQUIRED: 'URL in the pull request is required',
 };
 
 const setMessage = (result: string) => {
@@ -39,13 +41,13 @@ const run = async () => {
     });
 
     if (!prInfo.body) {
-        throw new Error('Pull request description is required');
+        throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
     const url = getUrlFromDescription(prInfo.body);
 
     if (!url) {
-        throw new Error('URL in the pull request is required');
+        throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
     }
 
     const pullRequestFiles = await github.getPullRequestFiles({
@@ -107,7 +109,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `${setMessage(e.message)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
+        const body = `${setMessage(`${BASE_ERROR_MESSAGE} ${e.message}`)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
 
         await github.createComment({
             repo,
