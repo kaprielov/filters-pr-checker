@@ -53,17 +53,8 @@ const run = async () => {
         pullNumber,
     });
 
-    core.setOutput('pullRequestFiles', pullRequestFiles);
-    // console.log('pullRequestFiles', pullRequestFiles);
-
-    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
-
-    if (filterList) {
-        // eslint-disable-next-line max-len
-        const targetFiles = pullRequestFiles.filter((fileName) => filterList.find((filter) => fileName === filter));
-        core.setOutput('targetFiles', targetFiles);
-        console.log('targetFiles', targetFiles);
-    }
+    // core.setOutput('pullRequestFiles', pullRequestFiles);
+    console.log('pullRequestFiles', pullRequestFiles);
 
     const baseFileContent = await github.getContent({
         owner: prInfo.base.owner,
@@ -72,12 +63,16 @@ const run = async () => {
         ref: prInfo.base.sha,
     });
 
+    console.log('baseFileContent', baseFileContent);
+
     const headFileContent = await github.getContent({
         owner: prInfo.head.owner,
         repo: prInfo.head.repo,
         path: pullRequestFiles[0],
         ref: prInfo.head.sha,
     });
+
+    console.log('headFileContent', headFileContent);
 
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
@@ -88,8 +83,12 @@ const run = async () => {
     await extension.config(context, baseFileContent.toString());
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
+    console.log('baseScreenshot', baseScreenshot);
+
     await extension.config(context, headFileContent.toString());
     const headScreenshot = await screenshot(context, { url, path: 'head_image.jpeg' });
+
+    console.log('headScreenshot', headScreenshot);
 
     await context.browserContext.close();
 
