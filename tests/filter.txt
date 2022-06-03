@@ -1,2 +1,2 @@
-!||adguard.com
+||adguard.com
 ||example.org

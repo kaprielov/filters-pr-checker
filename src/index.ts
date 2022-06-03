@@ -54,17 +54,22 @@ const run = async () => {
         pullNumber,
     });
 
-    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
+    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)
+        ?.split(';').map((name) => name.trim());
 
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
             if (filterList) {
-                return filterList.find((filter) => fileName === filter.trim());
+                return filterList.find(
+                    (filter) => fileName === filter && filter.includes(FILTER_EXT),
+                );
             }
 
             return fileName.includes(FILTER_EXT);
         },
     );
+
+    console.log('my_log_targetFiles', targetFiles);
 
     if (targetFiles.length === 0) {
         throw new Error(ERRORS_MESSAGES.NO_FILTERS);
