@@ -9,6 +9,7 @@ export const ERRORS_MESSAGES = {
     SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
     PR_DESC_REQUIRED: 'pull request description is required',
     URL_REQUEST_REQUIRED: 'URL in the pull request is required',
+    NO_FILTERS: 'no filters to check',
 };
 
 export const URL_MARK = '#url:';
