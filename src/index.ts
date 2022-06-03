@@ -78,7 +78,11 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
 
+    console.log('url', !url.match(REGEXP_PROTOCOL));
+
     const context = await extension.start();
+
+    console.log('extensioncontext', context);
 
     await extension.config(context, baseFileContent.toString());
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
