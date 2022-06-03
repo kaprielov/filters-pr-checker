@@ -56,8 +56,6 @@ const run = async () => {
 
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
 
-    console.log('my_log filterList', filterList);
-
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
             if (filterList) {
@@ -68,7 +66,9 @@ const run = async () => {
         },
     );
 
-    console.log('my_log targetFiles', targetFiles);
+    if (targetFiles.length === 0) {
+        throw new Error(ERRORS_MESSAGES.NO_FILTERS);
+    }
 
     const baseFilesContentArr = await Promise.all(targetFiles.map(async (name) => {
         const baseFileContent = await github.getContent({
@@ -92,33 +92,16 @@ const run = async () => {
         return headFileContent;
     }));
 
-    const baseFileContent = await github.getContent({
-        owner: prInfo.base.owner,
-        repo: prInfo.base.repo,
-        path: pullRequestFiles[0],
-        ref: prInfo.base.sha,
-    });
-
-    const headFileContent = await github.getContent({
-        owner: prInfo.head.owner,
-        repo: prInfo.head.repo,
-        path: pullRequestFiles[0],
-        ref: prInfo.head.sha,
-    });
-
-    console.log('my_log baseFileContent', baseFilesContentArr.join('\n'));
-    console.log('my_log headFileContent', headFilesContentArr.join('\n'));
-
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
 
     const context = await extension.start();
 
-    await extension.config(context, baseFileContent.toString());
+    await extension.config(context, baseFilesContentArr.join('\n'));
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
-    await extension.config(context, headFileContent.toString());
+    await extension.config(context, headFilesContentArr.join('\n'));
     const headScreenshot = await screenshot(context, { url, path: 'head_image.jpeg' });
 
     await context.browserContext.close();
