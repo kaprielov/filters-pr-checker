@@ -54,6 +54,7 @@ const run = async () => {
     });
 
     core.setOutput('pullRequestFiles', pullRequestFiles);
+    console.log('pullRequestFiles', pullRequestFiles);
 
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
 
@@ -61,6 +62,7 @@ const run = async () => {
         // eslint-disable-next-line max-len
         const targetFiles = pullRequestFiles.filter((fileName) => filterList.find((filter) => fileName === filter));
         core.setOutput('targetFiles', targetFiles);
+        console.log('targetFiles', targetFiles);
     }
 
     const baseFileContent = await github.getContent({
