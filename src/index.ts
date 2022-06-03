@@ -61,7 +61,7 @@ const run = async () => {
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
             if (filterList) {
-                return filterList.find((filter) => fileName === filter);
+                return filterList.find((filter) => fileName === filter.trim());
             }
 
             return fileName.includes(FILTER_EXT);
@@ -70,7 +70,7 @@ const run = async () => {
 
     console.log('my_log targetFiles', targetFiles);
 
-    const baseFilesContentArr = targetFiles.map(async (name) => {
+    const baseFilesContentArr = await Promise.all(targetFiles.map(async (name) => {
         const baseFileContent = await github.getContent({
             owner: prInfo.base.owner,
             repo: prInfo.base.repo,
@@ -79,9 +79,9 @@ const run = async () => {
         });
 
         return baseFileContent;
-    });
+    }));
 
-    const headFilesContentArr = targetFiles.map(async (name) => {
+    const headFilesContentArr = await Promise.all(targetFiles.map(async (name) => {
         const headFileContent = await github.getContent({
             owner: prInfo.head.owner,
             repo: prInfo.head.repo,
@@ -90,7 +90,7 @@ const run = async () => {
         });
 
         return headFileContent;
-    });
+    }));
 
     const baseFileContent = await github.getContent({
         owner: prInfo.base.owner,
