@@ -111,7 +111,7 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
+    const success = `Screenshotwithout new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
 
     if (!baseLink || !headLink) {
         throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
