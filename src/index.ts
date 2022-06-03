@@ -54,7 +54,7 @@ const run = async () => {
     });
 
     core.setOutput('pullRequestFiles', pullRequestFiles);
-    console.log('pullRequestFiles', pullRequestFiles);
+    // console.log('pullRequestFiles', pullRequestFiles);
 
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
 
