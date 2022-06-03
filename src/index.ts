@@ -3,20 +3,23 @@ import 'dotenv/config';
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { github, imgur } from './api';
-import { getValueFromDescription } from './helpers';
-import {
-    URL_MARK,
-    REGEXP_PROTOCOL,
-    DEFAULT_MESSAGE,
-    ERRORS_MESSAGES,
-    BASE_ERROR_MESSAGE,
-    FILTER_LIST_MARK,
-} from './constants';
+import { getUrlFromDescription } from './helpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
+const REGEXP_PROTOCOL = /^https?/;
+
+const BASE_ERROR_MESSAGE = 'The filters PR checker failed to check this pull request due to';
+
+const ERRORS_MESSAGES = {
+    INVALID_URL: 'invalid URL format',
+    SCREENSHOT_NOT_UPLOAD: 'no screenshots were received',
+    PR_DESC_REQUIRED: 'pull request description is required',
+    URL_REQUEST_REQUIRED: 'URL in the pull request is required',
+};
+
 const setMessage = (result: string) => {
-    return `${DEFAULT_MESSAGE} \r\n${result}`;
+    return `This pull request has been checked by the AdGuard filters pull request checker: \r\n${result}`;
 };
 
 const { runId } = gh.context;
@@ -41,7 +44,7 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    const url = getValueFromDescription(prInfo.body, URL_MARK);
+    const url = getUrlFromDescription(prInfo.body);
 
     if (!url) {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
@@ -52,16 +55,6 @@ const run = async () => {
         repo,
         pullNumber,
     });
-
-    core.setOutput('pullRequestFiles', pullRequestFiles);
-
-    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
-
-    if (filterList) {
-        // eslint-disable-next-line max-len
-        const targetFiles = pullRequestFiles.filter((fileName) => filterList.find((filter) => fileName === filter));
-        core.setOutput('targetFiles', targetFiles);
-    }
 
     const baseFileContent = await github.getContent({
         owner: prInfo.base.owner,
