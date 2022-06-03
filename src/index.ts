@@ -56,6 +56,8 @@ const run = async () => {
 
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
 
+    console.log('my_log filterList', filterList);
+
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
             if (filterList) {
@@ -65,6 +67,8 @@ const run = async () => {
             return fileName.includes(FILTER_EXT);
         },
     );
+
+    console.log('my_log targetFiles', targetFiles);
 
     const baseFilesContentArr = targetFiles.map(async (name) => {
         const baseFileContent = await github.getContent({
