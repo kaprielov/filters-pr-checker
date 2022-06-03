@@ -11,6 +11,7 @@ import {
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
+    FILTER_EXT,
 } from './constants';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -53,16 +54,39 @@ const run = async () => {
         pullNumber,
     });
 
-    // core.setOutput('pullRequestFiles', pullRequestFiles);
-    console.log('pullRequestFiles', pullRequestFiles);
-
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
 
-    if (filterList) {
-        // eslint-disable-next-line max-len
-        const targetFiles = pullRequestFiles.filter((fileName) => filterList.find((filter) => fileName === filter));
-        console.log('targetFiles', targetFiles);
-    }
+    const targetFiles = pullRequestFiles.filter(
+        (fileName) => {
+            if (filterList) {
+                return filterList.find((filter) => fileName === filter);
+            }
+
+            return fileName.includes(FILTER_EXT);
+        },
+    );
+
+    const baseFilesContentArr = targetFiles.map(async (name) => {
+        const baseFileContent = await github.getContent({
+            owner: prInfo.base.owner,
+            repo: prInfo.base.repo,
+            path: name,
+            ref: prInfo.base.sha,
+        });
+
+        return baseFileContent;
+    });
+
+    const headFilesContentArr = targetFiles.map(async (name) => {
+        const headFileContent = await github.getContent({
+            owner: prInfo.head.owner,
+            repo: prInfo.head.repo,
+            path: name,
+            ref: prInfo.head.sha,
+        });
+
+        return headFileContent;
+    });
 
     const baseFileContent = await github.getContent({
         owner: prInfo.base.owner,
@@ -78,8 +102,8 @@ const run = async () => {
         ref: prInfo.head.sha,
     });
 
-    console.log('my_log baseFileContent', baseFileContent);
-    console.log('my_log headFileContent', headFileContent);
+    console.log('my_log baseFileContent', baseFilesContentArr.join('\n'));
+    console.log('my_log headFileContent', headFilesContentArr.join('\n'));
 
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);

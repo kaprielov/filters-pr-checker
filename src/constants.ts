@@ -13,3 +13,5 @@ export const ERRORS_MESSAGES = {
 
 export const URL_MARK = '#url:';
 export const FILTER_LIST_MARK = '#filters:';
+
+export const FILTER_EXT = '.txt';
