@@ -1,4 +1,4 @@
-export const getValueFromDescription = (desc: string, key: string): string | null => {
+export const getStringFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
     const lines = rawLines.map((line) => line.trim());
     const lineWithKey = lines.find((line) => line.trim().startsWith(key));

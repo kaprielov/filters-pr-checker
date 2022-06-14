@@ -1,12 +1,12 @@
 import { URL_MARK } from '../src/constants';
-import { getValueFromDescription } from '../src/helpers';
+import { getStringFromDescription } from '../src/helpers';
 
 describe('helpers', () => {
     describe('getUrlFromDescription', () => {
         it('parses url', () => {
             const url = 'https://example.org';
             const text = `#url: ${url}`;
-            expect(getValueFromDescription(text, URL_MARK)).toBe(url);
+            expect(getStringFromDescription(text, URL_MARK)).toBe(url);
         });
 
         it('parses url in the multiple string description', () => {
@@ -15,7 +15,7 @@ describe('helpers', () => {
             this is my pr
             #url: ${url}
             `;
-            expect(getValueFromDescription(text, URL_MARK)).toBe(url);
+            expect(getStringFromDescription(text, URL_MARK)).toBe(url);
         });
     });
 });

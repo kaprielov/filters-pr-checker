@@ -3,7 +3,7 @@ import 'dotenv/config';
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { github, imgur } from './api';
-import { getValueFromDescription } from './helpers';
+import { getStringFromDescription } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
@@ -42,7 +42,7 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    const url = getValueFromDescription(prInfo.body, URL_MARK);
+    const url = getStringFromDescription(prInfo.body, URL_MARK);
 
     if (!url) {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
@@ -54,7 +54,7 @@ const run = async () => {
         pullNumber,
     });
 
-    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)
+    const filterList = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
         ?.split(';').map((path) => path.trim());
 
     const targetFiles = pullRequestFiles.filter(
@@ -114,7 +114,7 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const success = `Screenshotwithout new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
+    const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
 
     if (!baseLink || !headLink) {
         throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
