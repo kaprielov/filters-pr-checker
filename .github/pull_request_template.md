@@ -1,8 +1,5 @@
 ### Specify string with website url
-__#url: https://example.org__
 
-### You can specify a list of filters (optional)
-__#filters: tests/filter.txt; tests/filter2.txt__
+### Specify a list of filters (optional). By default, rules are taken from all modified files with a txt extension
 
 ### Description
-__Add a comment__
