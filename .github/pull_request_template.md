@@ -1,8 +1,5 @@
-### Specify string with website url
-__#url: https://example.org__
+### URL `example: #url: https://example.org`
 
-### You can specify a list of filters (optional)
-__#filters: tests/filter.txt; tests/filter2.txt__
+### List of filters `example: #filters: tests/filter.txt; tests/filter2.txt`
 
 ### Description
-__Add a comment__
