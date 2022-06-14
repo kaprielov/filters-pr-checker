@@ -1,2 +1,1 @@
 ||adguard.com
-!example.org##h1
