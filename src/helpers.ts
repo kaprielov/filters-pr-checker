@@ -1,4 +1,4 @@
-export const getValueFromDescription = (desc: string, key: string): string | null => {
+export const getStringFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
     const lines = rawLines.map((line) => line.trim());
     const lineWithKey = lines.find((line) => line.trim().startsWith(key));
@@ -6,7 +6,7 @@ export const getValueFromDescription = (desc: string, key: string): string | nul
         return null;
     }
 
-    const rawUrl = lineWithKey.substring(key.length);
-    const value = rawUrl.trim();
+    const rawString = lineWithKey.substring(key.length);
+    const value = rawString.trim();
     return value;
 };

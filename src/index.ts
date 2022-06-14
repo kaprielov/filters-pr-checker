@@ -3,7 +3,7 @@ import 'dotenv/config';
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { github, imgur } from './api';
-import { getValueFromDescription } from './helpers';
+import { getStringFromDescription } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
@@ -42,7 +42,7 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    const url = getValueFromDescription(prInfo.body, URL_MARK);
+    const url = getStringFromDescription(prInfo.body, URL_MARK);
 
     if (!url) {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
@@ -54,12 +54,15 @@ const run = async () => {
         pullNumber,
     });
 
-    const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)?.split(';');
+    const filterList = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
+        ?.split(';').map((path) => path.trim());
 
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
             if (filterList) {
-                return filterList.find((filter) => fileName === filter.trim());
+                return filterList.find(
+                    (filter) => fileName === filter && filter.includes(FILTER_EXT),
+                );
             }
 
             return fileName.includes(FILTER_EXT);
@@ -70,22 +73,22 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.NO_FILTERS);
     }
 
-    const baseFilesContentArr = await Promise.all(targetFiles.map(async (name) => {
+    const baseFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const baseFileContent = await github.getContent({
             owner: prInfo.base.owner,
             repo: prInfo.base.repo,
-            path: name,
+            path,
             ref: prInfo.base.sha,
         });
 
         return baseFileContent;
     }));
 
-    const headFilesContentArr = await Promise.all(targetFiles.map(async (name) => {
+    const headFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const headFileContent = await github.getContent({
             owner: prInfo.head.owner,
             repo: prInfo.head.repo,
-            path: name,
+            path,
             ref: prInfo.head.sha,
         });
 
