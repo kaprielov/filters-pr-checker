@@ -21,7 +21,7 @@ Add IMGUR_CLIENT_ID in the repository secrets. Action requires it in order to pu
 ### Pull Request description
 Description should contain string with website url 
 `#url: https://example.org`
-Specify a list of filters (optional). By default, rules are taken from all modified files with a txt extension.
+Specify a list of filters (optional). By default, rules are taken from modified files.
 `#filters: tests/filter.txt; tests/filter2.txt`
 
 ## TODO
