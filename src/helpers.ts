@@ -6,7 +6,7 @@ export const getValueFromDescription = (desc: string, key: string): string | nul
         return null;
     }
 
-    const rawUrl = lineWithKey.substring(key.length);
-    const value = rawUrl.trim();
+    const rawString = lineWithKey.substring(key.length);
+    const value = rawString.trim();
     return value;
 };
