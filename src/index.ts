@@ -55,7 +55,7 @@ const run = async () => {
     });
 
     const filterList = getValueFromDescription(prInfo.body, FILTER_LIST_MARK)
-        ?.split(';').map((filter) => filter.trim());
+        ?.split(';').map((path) => path.trim());
 
     const targetFiles = pullRequestFiles.filter(
         (fileName) => {
@@ -73,22 +73,22 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.NO_FILTERS);
     }
 
-    const baseFilesContentArr = await Promise.all(targetFiles.map(async (filter) => {
+    const baseFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const baseFileContent = await github.getContent({
             owner: prInfo.base.owner,
             repo: prInfo.base.repo,
-            path: filter,
+            path,
             ref: prInfo.base.sha,
         });
 
         return baseFileContent;
     }));
 
-    const headFilesContentArr = await Promise.all(targetFiles.map(async (filter) => {
+    const headFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const headFileContent = await github.getContent({
             owner: prInfo.head.owner,
             repo: prInfo.head.repo,
-            path: filter,
+            path,
             ref: prInfo.head.sha,
         });
 
