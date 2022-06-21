@@ -1,3 +1,4 @@
 ||stopgame.ru
 !||ya.ru
-example.org##p
+!example.org##p
+example.org##h1
