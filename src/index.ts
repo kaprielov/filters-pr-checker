@@ -24,6 +24,12 @@ const { runId } = gh.context;
 const { owner, repo } = gh.context.repo;
 const pullNumber = gh.context.payload.number;
 
+const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+
+const setMessageTest = (result: string) => {
+    return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n\r\n${result}`;
+};
+
 /**
  * - gets filter before pr
  * - makes screenshot before.jpg
@@ -114,13 +120,24 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const success = `Screenshot without new rules: ![baseScreenshot](${baseLink}) \r\nScreenshot with the new rules: ![headScreenshot](${headLink})`;
+    const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
+        \r\n\r\n
+        * The page URL: ${url}r\n
+        <details>
+            <summary>Screenshot without new rules</summary>r\n
+            ![](${baseLink})
+        </details>
+        r\nr\n
+        <details>
+            <summary>Screenshot with the new rules:</summary>r\n
+            ![](${headLink})
+        </details>`;
 
     if (!baseLink || !headLink) {
         throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
     }
 
-    const body = setMessage(success);
+    const body = `### ✅ ${setMessageTest(success)}`;
 
     await github.createComment({
         repo,
@@ -134,7 +151,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `${setMessage(`${BASE_ERROR_MESSAGE} ${e.message}`)} \r\n[Current run](https://github.com/${owner}/${repo}/actions/runs/${runId})`;
+        const body = `### 🔴 ${setMessageTest(`${BASE_ERROR_MESSAGE} ${e.message}`)}`;
 
         await github.createComment({
             repo,
