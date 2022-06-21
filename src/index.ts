@@ -121,16 +121,15 @@ const run = async () => {
     ]);
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
-
-        * The page URL: ${url}
-        <details>
-            <summary>Screenshot without new rules</summary>
-            ![](${baseLink})
-        </details>
-        <details>
-            <summary>Screenshot with the new rules:</summary>
-            ![](${headLink})
-        </details>`;
+    * The page URL: \`${url}\`
+    <details>
+    <summary>Screenshot without new rules</summary>
+    ![](${baseLink})
+    </details>
+    <details>
+    <summary>Screenshot with the new rules:</summary>
+    ![](${headLink})
+    </details>`;
 
     if (!baseLink || !headLink) {
         throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
