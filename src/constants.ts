@@ -1,7 +1,5 @@
 export const REGEXP_PROTOCOL = /^https?/;
 
-export const DEFAULT_MESSAGE_TITLE = 'Checked by the filters-pr-checker';
-
 export const DEFAULT_MESSAGE = 'This pull request has been checked by the AdGuard filters pull request checker:';
 
 export const BASE_ERROR_MESSAGE = 'Failed to check this pull request. \r\nThe filters PR checker failed to check this pull request due to';
