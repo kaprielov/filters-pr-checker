@@ -121,15 +121,14 @@ const run = async () => {
     ]);
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
-        \r\n\r\n
-        * The page URL: ${url}r\n
+
+        * The page URL: ${url}
         <details>
-            <summary>Screenshot without new rules</summary>r\n
+            <summary>Screenshot without new rules</summary>
             ![](${baseLink})
         </details>
-        r\nr\n
         <details>
-            <summary>Screenshot with the new rules:</summary>r\n
+            <summary>Screenshot with the new rules:</summary>
             ![](${headLink})
         </details>`;
 
