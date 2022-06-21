@@ -118,9 +118,10 @@ const run = async () => {
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
 * The page URL: \`${url}\`
 * Filter lists:
-<details>
-${targetFiles.join('; ')}
-</details>
+    <details>
+
+        ${targetFiles.join('; \r\n')}
+    </details>
 
 <details>
 <summary>Screenshot without new rules</summary>
