@@ -7,7 +7,6 @@ import { getStringFromDescription } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
-    DEFAULT_MESSAGE,
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
@@ -16,18 +15,14 @@ import {
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
-const setMessage = (result: string) => {
-    return `${DEFAULT_MESSAGE} \r\n${result}`;
-};
-
 const { runId } = gh.context;
 const { owner, repo } = gh.context.repo;
 const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
 
-const setMessageTest = (result: string) => {
-    return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n\r\n${result}`;
+const setMessage = (result: string) => {
+    return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
 };
 
 /**
@@ -121,23 +116,29 @@ const run = async () => {
     ]);
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
-        \r\n\r\n
-        * The page URL: ${url}r\n
-        <details>
-            <summary>Screenshot without new rules</summary>r\n
-            ![](${baseLink})
-        </details>
-        r\nr\n
-        <details>
-            <summary>Screenshot with the new rules:</summary>r\n
-            ![](${headLink})
-        </details>`;
+* The page URL: \`${url}\`
+* Filter lists:
+    <details>
+
+        ${targetFiles.join('; \r\n')}
+    </details>
+
+<details>
+<summary>Screenshot without new rules</summary>
+
+![](${baseLink})
+</details>
+<details>
+<summary>Screenshot with the new rules:</summary>
+
+![](${headLink})
+</details>`;
 
     if (!baseLink || !headLink) {
         throw new Error(ERRORS_MESSAGES.SCREENSHOT_NOT_UPLOAD);
     }
 
-    const body = `### ✅ ${setMessageTest(success)}`;
+    const body = `### ✅ ${setMessage(success)}`;
 
     await github.createComment({
         repo,
@@ -151,7 +152,7 @@ const run = async () => {
     try {
         await run();
     } catch (e) {
-        const body = `### 🔴 ${setMessageTest(`${BASE_ERROR_MESSAGE} ${e.message}`)}`;
+        const body = `### 🔴 ${setMessage(`${BASE_ERROR_MESSAGE} ${e.message}`)}`;
 
         await github.createComment({
             repo,
