@@ -116,7 +116,7 @@ const run = async () => {
     ]);
 
     const printFilesList = (files: string[]) => {
-        return files.map((filer) => `* ${filer}\r\n`).join('');
+        return files.map((filer) => `  * ${filer}\r\n`).join('');
     };
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
