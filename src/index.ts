@@ -115,13 +115,17 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
+    const printFilesList = (files: string[]) => {
+        return files.map((filer) => `  * ${filer}\r\n`).join('');
+    };
+
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
 * The page URL: \`${url}\`
 * Filter lists:
-    <details>
+  <details>
 
-        ${targetFiles.join('; \r\n')}
-    </details>
+  ${printFilesList(targetFiles)}
+  </details>
 
 <details>
 <summary>Screenshot without new rules</summary>

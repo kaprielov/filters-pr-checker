@@ -1,2 +1,2 @@
-||adguard.com
-example.org##h1
+!||adguard.com
+!example.org##h1
