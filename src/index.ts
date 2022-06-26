@@ -39,8 +39,6 @@ const run = async () => {
         pullNumber,
     });
 
-    console.log('my_prInfo', prInfo);
-
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
