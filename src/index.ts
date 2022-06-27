@@ -22,8 +22,6 @@ const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
 
-const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
-
 const RECOMMENDED_TAG_ID = 1;
 
 const setMessage = (result: string) => {
@@ -48,13 +46,14 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    // const diff = await fetch(prInfo.diffUrl);
-
-    // console.log('my_diff', diff);
+    const diff = await fetch(prInfo.diffUrl);
+    console.log('my_diff', diff);
 
     const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
 
-    console.log('my_filtersDefault', filtersDefault);
+    if (!filtersDefault) {
+        throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
+    }
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
 
@@ -98,6 +97,8 @@ const run = async () => {
         return baseFileContent;
     }));
 
+    console.log('my_baseFilesContentArr', baseFilesContentArr);
+
     const headFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const headFileContent = await github.getContent({
             owner: prInfo.head.owner,
@@ -115,7 +116,7 @@ const run = async () => {
 
     const context = await extension.start();
 
-    await extension.config(context, baseFilesContentArr.join('\n'));
+    await extension.config(context, filtersDefault.join('\n'));
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
     await extension.config(context, headFilesContentArr.join('\n'));

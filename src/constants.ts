@@ -8,6 +8,7 @@ export const ERRORS_MESSAGES = {
     PR_DESC_REQUIRED: 'pull request description is required',
     URL_REQUEST_REQUIRED: 'URL in the pull request is required',
     NO_FILTERS: 'no filters to check',
+    FILTERS_DEFAULT: 'problem of getting default filters',
 };
 
 export const URL_MARK = '#url:';
