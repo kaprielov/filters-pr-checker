@@ -52,7 +52,7 @@ const run = async () => {
 
     // console.log('my_diff', diff);
 
-    const filtersDefault = fetchFiltersByTag(RECOMMENDED_TAG_ID);
+    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
 
     console.log('my_filtersDefault', filtersDefault);
 
