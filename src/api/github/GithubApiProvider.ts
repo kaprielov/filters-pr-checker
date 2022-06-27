@@ -19,10 +19,9 @@ class GithubApiProvider {
 
         const { data } = response;
 
-        console.log('my_getPullRequest_data', data);
-
         return {
             body: data.body,
+            diffUrl: data.diff_url,
             head: {
                 owner: _.get(data.head, 'user.login'),
                 repo: _.get(data.head, 'repo.name'),

@@ -1,3 +1,4 @@
+import { fetchFiltersByTag } from './fetchFilters';
 import 'dotenv/config';
 
 import * as core from '@actions/core';
@@ -21,6 +22,10 @@ const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
 
+const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
+
+const RECOMMENDED_TAG_ID = 1;
+
 const setMessage = (result: string) => {
     return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
 };
@@ -42,6 +47,14 @@ const run = async () => {
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
+
+    // const diff = await fetch(prInfo.diffUrl);
+
+    // console.log('my_diff', diff);
+
+    const filtersDefault = fetchFiltersByTag(RECOMMENDED_TAG_ID);
+
+    console.log('my_filtersDefault', filtersDefault);
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
 
