@@ -1,3 +1,5 @@
+import fetch from 'node-fetch';
+
 import { FILTER_LIST_URL } from './constants';
 
 export const fetchFiltersByTag = async (tag: number) => {
@@ -6,7 +8,7 @@ export const fetchFiltersByTag = async (tag: number) => {
         const message = `Error status: ${response.status}. URL: ${FILTER_LIST_URL}`;
         throw new Error(message);
     }
-    const data = await response.json();
+    const data: any = await response.json();
     const recommended = data.filters
     // TODO fix any
         .filter((filter: any) => filter.tags.includes(tag));
