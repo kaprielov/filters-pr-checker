@@ -2,6 +2,7 @@ import 'dotenv/config';
 
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
+import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
 import { getStringFromDescription } from './helpers';
 import {
@@ -20,6 +21,8 @@ const { owner, repo } = gh.context.repo;
 const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
+
+const RECOMMENDED_TAG_ID = 1;
 
 const setMessage = (result: string) => {
     return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
@@ -41,6 +44,15 @@ const run = async () => {
 
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
+    }
+
+    // TODO apply to the filtersDefault
+    // const diff = await fetch(prInfo.diffUrl);
+
+    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
+
+    if (!filtersDefault) {
+        throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
     }
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
@@ -85,6 +97,8 @@ const run = async () => {
         return baseFileContent;
     }));
 
+    console.log('my_baseFilesContentArr', baseFilesContentArr);
+
     const headFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
         const headFileContent = await github.getContent({
             owner: prInfo.head.owner,
@@ -102,7 +116,7 @@ const run = async () => {
 
     const context = await extension.start();
 
-    await extension.config(context, baseFilesContentArr.join('\n'));
+    await extension.config(context, filtersDefault.join('\n'));
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
     await extension.config(context, headFilesContentArr.join('\n'));

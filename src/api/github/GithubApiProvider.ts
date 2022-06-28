@@ -21,6 +21,7 @@ class GithubApiProvider {
 
         return {
             body: data.body,
+            diffUrl: data.diff_url,
             head: {
                 owner: _.get(data.head, 'user.login'),
                 repo: _.get(data.head, 'repo.name'),

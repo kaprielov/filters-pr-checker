@@ -8,9 +8,14 @@ export const ERRORS_MESSAGES = {
     PR_DESC_REQUIRED: 'pull request description is required',
     URL_REQUEST_REQUIRED: 'URL in the pull request is required',
     NO_FILTERS: 'no filters to check',
+    FILTERS_DEFAULT: 'problem of getting default filters',
 };
 
 export const URL_MARK = '#url:';
 export const FILTER_LIST_MARK = '#filters:';
 
 export const FILTER_EXT = '.txt';
+
+// TODO 29 is not a RECOMMENDED_TAG_ID, replace it with 1
+export const RECOMMENDED_TAG_ID = 29;
+export const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
