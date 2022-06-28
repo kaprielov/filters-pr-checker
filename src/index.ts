@@ -90,6 +90,7 @@ const run = async () => {
     const diff = await textFromResponse(prInfo.diffUrl);
 
     const filtersModified = applyDiffToString(diff, filtersDefault.join('\n'));
+    console.log('my_filtersModified', filtersModified);
 
     const context = await extension.start();
 
