@@ -2,9 +2,6 @@ import 'dotenv/config';
 
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
-import { fetchFiltersByTag } from './fetchFilters';
-import { github, imgur } from './api';
-import { getStringFromDescription, textFromResponse } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
@@ -14,6 +11,10 @@ import {
     FILTER_EXT,
     RECOMMENDED_TAG_ID,
 } from './constants';
+import { fetchFiltersByTag } from './fetchFilters';
+import { github, imgur } from './api';
+import { getStringFromDescription, textFromResponse } from './helpers';
+import { applyDiffToString } from './applyDiffToFilters';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
@@ -43,17 +44,6 @@ const run = async () => {
 
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
-    }
-
-    // TODO apply to the filtersDefault
-    const diff = await textFromResponse(prInfo.diffUrl);
-
-    console.log('my_diff', diff);
-
-    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
-
-    if (!filtersDefault) {
-        throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
     }
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
@@ -87,40 +77,26 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.NO_FILTERS);
     }
 
-    const baseFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
-        const baseFileContent = await github.getContent({
-            owner: prInfo.base.owner,
-            repo: prInfo.base.repo,
-            path,
-            ref: prInfo.base.sha,
-        });
-
-        return baseFileContent;
-    }));
-
-    console.log('my_baseFilesContentArr', baseFilesContentArr);
-
-    const headFilesContentArr = await Promise.all(targetFiles.map(async (path) => {
-        const headFileContent = await github.getContent({
-            owner: prInfo.head.owner,
-            repo: prInfo.head.repo,
-            path,
-            ref: prInfo.head.sha,
-        });
-
-        return headFileContent;
-    }));
-
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
+
+    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
+
+    if (!filtersDefault) {
+        throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
+    }
+
+    const diff = await textFromResponse(prInfo.diffUrl);
+
+    const filtersModified = applyDiffToString(diff, filtersDefault.join('\n'));
 
     const context = await extension.start();
 
     await extension.config(context, filtersDefault.join('\n'));
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
-    await extension.config(context, headFilesContentArr.join('\n'));
+    await extension.config(context, filtersModified);
     const headScreenshot = await screenshot(context, { url, path: 'head_image.jpeg' });
 
     await context.browserContext.close();
