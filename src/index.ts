@@ -1,8 +1,8 @@
-import { fetchFiltersByTag } from './fetchFilters';
 import 'dotenv/config';
 
 import * as core from '@actions/core';
 import * as gh from '@actions/github';
+import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
 import { getStringFromDescription } from './helpers';
 import {
@@ -46,8 +46,8 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    const diff = await fetch(prInfo.diffUrl);
-    console.log('my_diff', diff);
+    // TODO apply to the filtersDefault
+    // const diff = await fetch(prInfo.diffUrl);
 
     const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
 

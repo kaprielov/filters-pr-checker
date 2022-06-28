@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 
 import { FILTER_LIST_URL } from './constants';
 
+// TODO fix any
 export const fetchFiltersByTag = async (tag: number) => {
     const response = await fetch(FILTER_LIST_URL);
     if (!response.ok) {
@@ -10,10 +11,8 @@ export const fetchFiltersByTag = async (tag: number) => {
     }
     const data: any = await response.json();
     const recommended = data.filters
-    // TODO fix any
         .filter((filter: any) => filter.tags.includes(tag));
     const urlList = recommended.map(
-    // TODO fix any
         (filter: any) => filter.subscriptionUrl,
     );
 
