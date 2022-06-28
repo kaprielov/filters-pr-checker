@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
-import { getStringFromDescription } from './helpers';
+import { getStringFromDescription, textFromResponse } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
@@ -12,6 +12,7 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FILTER_EXT,
+    RECOMMENDED_TAG_ID,
 } from './constants';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -21,8 +22,6 @@ const { owner, repo } = gh.context.repo;
 const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
-
-const RECOMMENDED_TAG_ID = 1;
 
 const setMessage = (result: string) => {
     return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
@@ -47,7 +46,9 @@ const run = async () => {
     }
 
     // TODO apply to the filtersDefault
-    // const diff = await fetch(prInfo.diffUrl);
+    const diff = await textFromResponse(prInfo.diffUrl);
+
+    console.log('my_diff', diff);
 
     const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
 
