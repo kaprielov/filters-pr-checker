@@ -4,7 +4,7 @@ import * as core from '@actions/core';
 import * as gh from '@actions/github';
 import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
-import { getStringFromDescription } from './helpers';
+import { getStringFromDescription, textFromResponse } from './helpers';
 import {
     URL_MARK,
     REGEXP_PROTOCOL,
@@ -47,7 +47,9 @@ const run = async () => {
     }
 
     // TODO apply to the filtersDefault
-    // const diff = await fetch(prInfo.diffUrl);
+    const diff = await textFromResponse(prInfo.diffUrl);
+
+    console.log('my_diff', diff);
 
     const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
 
