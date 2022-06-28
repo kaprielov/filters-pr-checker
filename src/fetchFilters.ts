@@ -6,6 +6,7 @@ export const fetchFiltersByTag = async (tag: number) => {
     const data = await jsonFromResponse(FILTER_LIST_URL);
     const recommended = data.filters
         .filter((filter: any) => filter.tags.includes(tag));
+
     const urlList = recommended.map(
         (filter: any) => filter.subscriptionUrl,
     );

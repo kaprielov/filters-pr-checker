@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 
 export const getStringFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
@@ -13,8 +13,7 @@ export const getStringFromDescription = (desc: string, key: string): string | nu
     return value;
 };
 
-// TODO fix any
-export const fetchResponse = async (url: string): Promise<any> => {
+export const fetchResponse = async (url: string): Promise<Response> => {
     const response = await fetch(url);
     if (!response.ok) {
         const message = `Error status: ${response.status}. URL: ${url}`;
