@@ -14,7 +14,7 @@ import {
 import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
 import { getStringFromDescription, textFromResponse } from './helpers';
-import { applyDiffToString } from './applyDiffToFilters';
+import { applyDiffToString } from './applyDiffToString';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
@@ -90,7 +90,6 @@ const run = async () => {
     const diff = await textFromResponse(prInfo.diffUrl);
 
     const filtersModified = applyDiffToString(diff, filtersDefault.join('\n'));
-    console.log('my_filtersModified', filtersModified);
 
     const context = await extension.start();
 
