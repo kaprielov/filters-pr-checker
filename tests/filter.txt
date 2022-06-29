@@ -8242,7 +8242,6 @@ lonteku.sbs###wpb_overlay
 indobokepz.com##.adBar-vertical.left
 indobokepz.com##.adBar-vertical.right
 semprot.com#@#.adVertical
-mediahiburan.my##.adplaceholder-mrec
 154.26.132.73,194.233.87.224##.banner-img
 manhwahentai.me,manytoon.com,www.webtoon.xyz##.c-ads.ad
 bokepfull.fun,sukamovie.mobi,videocrot.org##.headbanner
