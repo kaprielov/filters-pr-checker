@@ -8536,3 +8536,4 @@ nekopoi.care,nekopoi.cash,nekopoi.lol##div[class^="mobileads"]
 ||xjudi.com^$third-party
 ||yourpokercash.com^$third-party
 !||yoyopoker.net^$popup
+example.org##h1
