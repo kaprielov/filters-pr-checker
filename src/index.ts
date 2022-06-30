@@ -13,8 +13,8 @@ import {
 } from './constants';
 import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
-import { getStringFromDescription, textFromResponse } from './helpers';
-import { applyDiffToString } from './applyDiffToString';
+import { getStringFromDescription, applyDiffToString } from './helpers';
+import { textFromResponse } from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 

@@ -1,5 +1,5 @@
 import { FILTER_LIST_URL } from './constants';
-import { jsonFromResponse, textFromResponse } from './helpers';
+import { jsonFromResponse, textFromResponse } from './fetchHelpers';
 
 // TODO fix any
 export const fetchFiltersByTag = async (tag: number) => {

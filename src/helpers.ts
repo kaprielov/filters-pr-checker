@@ -1,5 +1,3 @@
-import fetch, { Response } from 'node-fetch';
-
 export const getStringFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
     const lines = rawLines.map((line) => line.trim());
@@ -13,24 +11,26 @@ export const getStringFromDescription = (desc: string, key: string): string | nu
     return value;
 };
 
-export const fetchResponse = async (url: string): Promise<Response> => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `Error status: ${response.status}. URL: ${url}`;
-        throw new Error(message);
-    }
-    return response;
-};
+export const applyDiffToString = (diff: string, string: string) => {
+    const diffLines = diff.split('\n');
+    const stringLines = string.split('\n');
 
-export const textFromResponse = async (url: string): Promise<string> => {
-    const response = await fetchResponse(url);
-    const text = await response.text();
-    return text;
-};
+    const result = diffLines.reduce((acc, line) => {
+        const lineType = line.charAt(0);
+        const lineContent = line.substring(1);
 
-// TODO fix any
-export const jsonFromResponse = async (url: string): Promise<any> => {
-    const response = await fetchResponse(url);
-    const json = await response.json();
-    return json;
+        const filePath = lineContent.match(/^([-+])(.*)$/);
+
+        if (lineType === '-' && !filePath) {
+            return acc.filter((string) => string !== lineContent);
+        }
+
+        if (lineType === '+' && !filePath) {
+            return [...acc, lineContent];
+        }
+
+        return acc;
+    }, stringLines);
+
+    return result.join('\n');
 };
