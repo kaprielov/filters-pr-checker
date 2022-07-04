@@ -11,10 +11,9 @@ import {
     FILTER_EXT,
     RECOMMENDED_TAG_ID,
 } from './constants';
-import { fetchFiltersByTag } from './fetchFilters';
 import { github, imgur } from './api';
-import { getStringFromDescription, textFromResponse } from './helpers';
-import { applyDiffToString } from './applyDiffToString';
+import { getStringFromDescription, applyDiffToString } from './helpers';
+import { textFromResponse, fetchFiltersByTag } from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 

@@ -16,5 +16,33 @@ export const FILTER_LIST_MARK = '#filters:';
 
 export const FILTER_EXT = '.txt';
 
-export const RECOMMENDED_TAG_ID = 1;
+export const RECOMMENDED_TAG_ID = 10;
 export const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
+
+export type FilterType = {
+    filterId: number,
+    name: string,
+    description: string,
+    timeAdded: string,
+    homepage: string,
+    expires: number,
+    displayNumber: number,
+    groupId: number,
+    subscriptionUrl: string,
+    trustLevel: string,
+    version: string,
+    timeUpdated: string,
+    languages: string[],
+    tags: number[],
+};
+
+export type FilterListType = {
+    groups: [
+        {
+            groupId: number,
+            groupName: string,
+            displayNumber: number,
+        },
+    ],
+    filters: FilterType[],
+};
