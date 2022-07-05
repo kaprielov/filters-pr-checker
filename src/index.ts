@@ -49,11 +49,20 @@ const run = async () => {
         },
     });
 
+    const prInfoDiff = await github.getPullRequest({
+        owner,
+        repo,
+        pullNumber,
+        mediaType: {
+            format: 'diff',
+        },
+    });
+
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
 
-    console.log('prInfo', prInfo);
+    console.log('my_prInfoDiff', prInfoDiff);
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
 
