@@ -45,7 +45,7 @@ const run = async () => {
         repo,
         pullNumber,
         mediaType: {
-            format: 'diff',
+            format: 'sha',
         },
     });
 

@@ -42,7 +42,7 @@ describe('api', () => {
                 pullNumber: 1,
                 mediaType:
                     {
-                        format: 'diff',
+                        format: 'sha',
                     },
             });
             expect(pullRequestData).toEqual({
