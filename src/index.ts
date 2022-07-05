@@ -9,11 +9,15 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FILTER_EXT,
-    RECOMMENDED_TAG_ID,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './helpers';
-import { textFromResponse, fetchFiltersByTag } from './fetchHelpers';
+import {
+    textFromResponse,
+    fetchTargetFilters,
+    fetchFiltersText,
+    fetchFiltersName,
+} from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
@@ -51,36 +55,18 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
     }
 
-    const pullRequestFiles = await github.getPullRequestFiles({
-        owner,
-        repo,
-        pullNumber,
-    });
-
-    const filterList = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
-        ?.split(';').map((path) => path.trim());
-
-    const targetFiles = pullRequestFiles.filter(
-        (fileName) => {
-            if (filterList) {
-                return filterList.find(
-                    (filter) => fileName === filter && filter.includes(FILTER_EXT),
-                );
-            }
-
-            return fileName.includes(FILTER_EXT);
-        },
-    );
-
-    if (targetFiles.length === 0) {
-        throw new Error(ERRORS_MESSAGES.NO_FILTERS);
-    }
-
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
 
-    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
+    const targetFiltersIds = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
+        ?.split(';').map((path) => path.trim());
+
+    const targetFilters = await fetchTargetFilters(targetFiltersIds);
+
+    const filtersDefault = await fetchFiltersText(targetFilters);
+
+    const filtersName = await fetchFiltersName(targetFilters);
 
     if (!filtersDefault) {
         throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
@@ -114,7 +100,7 @@ const run = async () => {
 * Filter lists:
   <details>
 
-  ${printFilesList(targetFiles)}
+  ${printFilesList(filtersName)}
   </details>
 
 <details>
