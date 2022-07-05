@@ -1,1 +1,2 @@
 example.org##h1
+@@||babylonbee.com^$urlblock,elemhide,content,jsinject
