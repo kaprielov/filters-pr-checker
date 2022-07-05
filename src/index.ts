@@ -9,9 +9,11 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FilterNamesType,
+    MEDIA_TYPE_SHA,
+    MEDIA_TYPE_DIFF,
 } from './constants';
 import { github, imgur } from './api';
-import { getStringFromDescription, applyDiffToString } from './helpers';
+import { getStringFromDescription, applyDiffToString } from './strings';
 import {
     fetchTargetFilters,
     fetchFiltersText,
@@ -43,7 +45,7 @@ const run = async () => {
         repo,
         pullNumber,
         mediaType: {
-            format: 'sha',
+            format: MEDIA_TYPE_SHA,
         },
     });
 
@@ -64,35 +66,34 @@ const run = async () => {
     const targetFiltersIds = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
         ?.split(';').map((path) => path.trim());
 
-    // Filters by ids. If no ids, gets recommended filters
+    // 1. Get filters by ids. If no ids, gets recommended filters
     const targetFilters = await fetchTargetFilters(targetFiltersIds);
-
     const filtersDefault = await fetchFiltersText(targetFilters);
-
-    const filterNames = await fetchFilterNames(targetFilters);
 
     if (!filtersDefault) {
         throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
     }
 
+    // 2. Get diff with filter changes
     const diff = await github.getPullRequestDiff({
         owner,
         repo,
         pullNumber,
         mediaType: {
-            format: 'diff',
+            format: MEDIA_TYPE_DIFF,
         },
     });
 
-    console.log('my_diff', diff);
-
+    // 3. Get filter string with changes from diff
     const filtersModified = applyDiffToString(diff.toString(), filtersDefault.join('\n'));
 
     const context = await extension.start();
 
+    // 4. Apply a no-diff filter string to get a screenshot without changes
     await extension.config(context, filtersDefault.join('\n'));
     const baseScreenshot = await screenshot(context, { url, path: 'base_image.jpeg' });
 
+    // 5. Apply a diff filter string to get a screenshot with changes
     await extension.config(context, filtersModified);
     const headScreenshot = await screenshot(context, { url, path: 'head_image.jpeg' });
 
@@ -106,6 +107,9 @@ const run = async () => {
     const printFilesList = (files: FilterNamesType[]) => {
         return files.map((filer) => `  * [${filer.name}](${filer.url})\r\n`).join('');
     };
+
+    // Filter names with urls, used to print in a comment
+    const filterNames = await fetchFilterNames(targetFilters);
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
 * The page URL: \`${url}\`
