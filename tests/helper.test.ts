@@ -1,5 +1,5 @@
 import { URL_MARK } from '../src/constants';
-import { applyDiffToString, getStringFromDescription } from '../src/helpers';
+import { applyDiffToString, getStringFromDescription } from '../src/strings';
 
 describe('helpers', () => {
     describe('getUrlFromDescription', () => {

@@ -1,3 +1,6 @@
+import { HYPHEN_MINUS, PLUS_SIGN } from './constants';
+
+// Extracting key information from the pull request description
 export const getStringFromDescription = (desc: string, key: string): string | null => {
     const rawLines = desc.split('\n');
     const lines = rawLines.map((line) => line.trim());
@@ -11,8 +14,9 @@ export const getStringFromDescription = (desc: string, key: string): string | nu
     return value;
 };
 
+// Applies the pull request diff to the filters
 export const applyDiffToString = (diff: string, string: string) => {
-    const diffLines = diff.split('\n');
+    const diffLines = diff.split('\n\r');
     const stringLines = string.split('\n');
 
     const result = diffLines.reduce((acc, line) => {
@@ -21,11 +25,11 @@ export const applyDiffToString = (diff: string, string: string) => {
 
         const filePath = lineContent.match(/^([-+])(.*)$/);
 
-        if (lineType === '-' && !filePath) {
+        if (lineType === HYPHEN_MINUS && !filePath) {
             return acc.filter((string) => string !== lineContent);
         }
 
-        if (lineType === '+' && !filePath) {
+        if (lineType === PLUS_SIGN && !filePath) {
             return [...acc, lineContent];
         }
 

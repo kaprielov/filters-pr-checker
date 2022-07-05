@@ -17,6 +17,12 @@ export const FILTER_LIST_MARK = '#filters:';
 export const RECOMMENDED_TAG_ID = 10;
 export const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
 
+export const HYPHEN_MINUS = '-';
+export const PLUS_SIGN = '+';
+
+export const MEDIA_TYPE_SHA = 'sha';
+export const MEDIA_TYPE_DIFF = 'diff';
+
 export type FilterType = {
     filterId: number,
     name: string,
