@@ -44,11 +44,16 @@ const run = async () => {
         owner,
         repo,
         pullNumber,
+        mediaType: {
+            format: 'diff',
+        },
     });
 
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
+
+    console.log('prInfo', prInfo);
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
 

@@ -26,12 +26,14 @@ class GithubApi {
             owner,
             repo,
             pullNumber,
+            mediaType,
         } = params;
 
         return this.octokit.rest.pulls.get({
             owner,
             repo,
             pull_number: pullNumber,
+            mediaType,
         });
     };
 
