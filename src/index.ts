@@ -8,13 +8,11 @@ import {
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
-    FILTER_EXT,
     FilterNamesType,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './helpers';
 import {
-    textFromResponse,
     fetchTargetFilters,
     fetchFiltersText,
     fetchFilterNames,
@@ -49,20 +47,9 @@ const run = async () => {
         },
     });
 
-    const prInfoDiff = await github.getPullRequestDiff({
-        owner,
-        repo,
-        pullNumber,
-        mediaType: {
-            format: 'diff',
-        },
-    });
-
     if (!prInfo.body) {
         throw new Error(ERRORS_MESSAGES.PR_DESC_REQUIRED);
     }
-
-    console.log('my_prInfoDiff', prInfoDiff);
 
     const url = getStringFromDescription(prInfo.body, URL_MARK);
 
@@ -88,9 +75,18 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
     }
 
-    const diff = await textFromResponse(prInfo.diffUrl);
+    const diff = await github.getPullRequestDiff({
+        owner,
+        repo,
+        pullNumber,
+        mediaType: {
+            format: 'diff',
+        },
+    });
 
-    const filtersModified = applyDiffToString(diff, filtersDefault.join('\n'));
+    console.log('my_diff', diff);
+
+    const filtersModified = applyDiffToString(diff.toString(), filtersDefault.join('\n'));
 
     const context = await extension.start();
 

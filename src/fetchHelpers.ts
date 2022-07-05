@@ -15,7 +15,7 @@ const fetchResponse = async (url: string): Promise<Response> => {
     return response;
 };
 
-export const textFromResponse = async (url: string): Promise<string> => {
+const textFromResponse = async (url: string): Promise<string> => {
     const response = await fetchResponse(url);
     const text = await response.text();
     return text;
@@ -54,10 +54,7 @@ export const fetchFiltersText = async (filters: FilterType[]) => {
 
 export const fetchFilterNames = async (filters: FilterType[]) => {
     const nameList = filters.map(
-        (filter: FilterType) => {
-            const obj = { name: filter.name, url: filter.subscriptionUrl };
-            return obj;
-        },
+        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
     );
 
     return nameList;
