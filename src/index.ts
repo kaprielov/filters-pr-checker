@@ -49,7 +49,7 @@ const run = async () => {
         },
     });
 
-    const prInfoDiff = await github.getPullRequest({
+    const prInfoDiff = await github.getPullRequestDiff({
         owner,
         repo,
         pullNumber,

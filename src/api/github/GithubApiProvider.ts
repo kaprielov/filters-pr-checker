@@ -36,6 +36,19 @@ class GithubApiProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this
+    async getPullRequestDiff(params: GetPullRequestParams) {
+        const response = await githubApi.getPullRequest(params);
+
+        if (response.status !== 200) {
+            throw new Error(`Couldn't get pull request by params: ${JSON.stringify(params)}, status: ${response.status}`);
+        }
+
+        const { data } = response;
+
+        return data;
+    }
+
+    // eslint-disable-next-line class-methods-use-this
     async getPullRequestFiles(params: GetFilesParams) {
         const response = await githubApi.getPullRequestFiles(params);
 
