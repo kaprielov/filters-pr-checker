@@ -9,6 +9,7 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FILTER_EXT,
+    FilterNamesType,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './helpers';
@@ -16,7 +17,7 @@ import {
     textFromResponse,
     fetchTargetFilters,
     fetchFiltersText,
-    fetchFiltersName,
+    fetchFilterNames,
 } from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -62,11 +63,12 @@ const run = async () => {
     const targetFiltersIds = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
         ?.split(';').map((path) => path.trim());
 
+    // Filters by ids. If no ids, gets recommended filters
     const targetFilters = await fetchTargetFilters(targetFiltersIds);
 
     const filtersDefault = await fetchFiltersText(targetFilters);
 
-    const filtersName = await fetchFiltersName(targetFilters);
+    const filterNames = await fetchFilterNames(targetFilters);
 
     if (!filtersDefault) {
         throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
@@ -91,8 +93,8 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const printFilesList = (files: string[]) => {
-        return files.map((filer) => `  * ${filer}\r\n`).join('');
+    const printFilesList = (files: FilterNamesType[]) => {
+        return files.map((filer) => `  * [${filer.name}](${filer.url})\r\n`).join('');
     };
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
@@ -100,7 +102,7 @@ const run = async () => {
 * Filter lists:
   <details>
 
-  ${printFilesList(filtersName)}
+  ${printFilesList(filterNames)}
   </details>
 
 <details>

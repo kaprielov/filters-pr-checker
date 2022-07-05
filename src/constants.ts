@@ -46,3 +46,8 @@ export type FilterListType = {
     ],
     filters: FilterType[],
 };
+
+export type FilterNamesType = {
+    name: string,
+    url: string,
+};

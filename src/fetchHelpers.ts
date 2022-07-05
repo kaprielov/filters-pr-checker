@@ -21,6 +21,7 @@ export const textFromResponse = async (url: string): Promise<string> => {
     return text;
 };
 
+// Filters by ids. If no ids, return recommended filters
 export const fetchTargetFilters = async (id: string[] | undefined) => {
     const data = await textFromResponse(FILTER_LIST_URL);
     const json: FilterListType = JSON.parse(data);
@@ -51,9 +52,12 @@ export const fetchFiltersText = async (filters: FilterType[]) => {
     return filtersText;
 };
 
-export const fetchFiltersName = async (filters: FilterType[]) => {
+export const fetchFilterNames = async (filters: FilterType[]) => {
     const nameList = filters.map(
-        (filter: FilterType) => filter.name,
+        (filter: FilterType) => {
+            const obj = { name: filter.name, url: filter.subscriptionUrl };
+            return obj;
+        },
     );
 
     return nameList;
