@@ -14,8 +14,6 @@ export const ERRORS_MESSAGES = {
 export const URL_MARK = '#url:';
 export const FILTER_LIST_MARK = '#filters:';
 
-export const FILTER_EXT = '.txt';
-
 export const RECOMMENDED_TAG_ID = 10;
 export const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/filters.json';
 
@@ -45,4 +43,9 @@ export type FilterListType = {
         },
     ],
     filters: FilterType[],
+};
+
+export type FilterNamesType = {
+    name: string,
+    url: string,
 };

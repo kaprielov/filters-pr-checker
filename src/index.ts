@@ -8,12 +8,15 @@ import {
     ERRORS_MESSAGES,
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
-    FILTER_EXT,
-    RECOMMENDED_TAG_ID,
+    FilterNamesType,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './helpers';
-import { textFromResponse, fetchFiltersByTag } from './fetchHelpers';
+import {
+    fetchTargetFilters,
+    fetchFiltersText,
+    fetchFilterNames,
+} from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
 
@@ -39,6 +42,9 @@ const run = async () => {
         owner,
         repo,
         pullNumber,
+        mediaType: {
+            format: 'sha',
+        },
     });
 
     if (!prInfo.body) {
@@ -51,44 +57,36 @@ const run = async () => {
         throw new Error(ERRORS_MESSAGES.URL_REQUEST_REQUIRED);
     }
 
-    const pullRequestFiles = await github.getPullRequestFiles({
-        owner,
-        repo,
-        pullNumber,
-    });
-
-    const filterList = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
-        ?.split(';').map((path) => path.trim());
-
-    const targetFiles = pullRequestFiles.filter(
-        (fileName) => {
-            if (filterList) {
-                return filterList.find(
-                    (filter) => fileName === filter && filter.includes(FILTER_EXT),
-                );
-            }
-
-            return fileName.includes(FILTER_EXT);
-        },
-    );
-
-    if (targetFiles.length === 0) {
-        throw new Error(ERRORS_MESSAGES.NO_FILTERS);
-    }
-
     if (!url.match(REGEXP_PROTOCOL)) {
         throw new Error(ERRORS_MESSAGES.INVALID_URL);
     }
 
-    const filtersDefault = await fetchFiltersByTag(RECOMMENDED_TAG_ID);
+    const targetFiltersIds = getStringFromDescription(prInfo.body, FILTER_LIST_MARK)
+        ?.split(';').map((path) => path.trim());
+
+    // Filters by ids. If no ids, gets recommended filters
+    const targetFilters = await fetchTargetFilters(targetFiltersIds);
+
+    const filtersDefault = await fetchFiltersText(targetFilters);
+
+    const filterNames = await fetchFilterNames(targetFilters);
 
     if (!filtersDefault) {
         throw new Error(ERRORS_MESSAGES.FILTERS_DEFAULT);
     }
 
-    const diff = await textFromResponse(prInfo.diffUrl);
+    const diff = await github.getPullRequestDiff({
+        owner,
+        repo,
+        pullNumber,
+        mediaType: {
+            format: 'diff',
+        },
+    });
 
-    const filtersModified = applyDiffToString(diff, filtersDefault.join('\n'));
+    console.log('my_diff', diff);
+
+    const filtersModified = applyDiffToString(diff.toString(), filtersDefault.join('\n'));
 
     const context = await extension.start();
 
@@ -105,8 +103,8 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const printFilesList = (files: string[]) => {
-        return files.map((filer) => `  * ${filer}\r\n`).join('');
+    const printFilesList = (files: FilterNamesType[]) => {
+        return files.map((filer) => `  * [${filer.name}](${filer.url})\r\n`).join('');
     };
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
@@ -114,7 +112,7 @@ const run = async () => {
 * Filter lists:
   <details>
 
-  ${printFilesList(targetFiles)}
+  ${printFilesList(filterNames)}
   </details>
 
 <details>

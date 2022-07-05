@@ -36,7 +36,15 @@ describe('api', () => {
                 .spyOn(githubApi, 'getPullRequest')
                 .mockResolvedValue(data as unknown as GetPullRequestResponse);
 
-            const pullRequestData = await github.getPullRequest({ owner: 'test', repo: 'test', pullNumber: 1 });
+            const pullRequestData = await github.getPullRequest({
+                owner: 'test',
+                repo: 'test',
+                pullNumber: 1,
+                mediaType:
+                    {
+                        format: 'sha',
+                    },
+            });
             expect(pullRequestData).toEqual({
                 head: {
                     owner: data.data.head.user.login,

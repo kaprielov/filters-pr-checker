@@ -1,5 +1,10 @@
 import fetch, { Response } from 'node-fetch';
-import { FilterListType, FilterType, FILTER_LIST_URL } from './constants';
+import {
+    FilterListType,
+    FilterType,
+    FILTER_LIST_URL,
+    RECOMMENDED_TAG_ID,
+} from './constants';
 
 const fetchResponse = async (url: string): Promise<Response> => {
     const response = await fetch(url);
@@ -10,28 +15,47 @@ const fetchResponse = async (url: string): Promise<Response> => {
     return response;
 };
 
-export const textFromResponse = async (url: string): Promise<string> => {
+const textFromResponse = async (url: string): Promise<string> => {
     const response = await fetchResponse(url);
     const text = await response.text();
     return text;
 };
 
-export const fetchFiltersByTag = async (tag: number) => {
+// Filters by ids. If no ids, return recommended filters
+export const fetchTargetFilters = async (id: string[] | undefined) => {
     const data = await textFromResponse(FILTER_LIST_URL);
     const json: FilterListType = JSON.parse(data);
-    const recommended = json.filters
-        .filter((filter: FilterType) => filter.tags.includes(tag));
+    if (id) {
+        const targetFilters = json.filters
+            .filter((filter: FilterType) => id.includes(filter.filterId.toString()));
+        return targetFilters;
+    }
 
-    const urlList = recommended.map(
+    const recommendedFilters = json.filters
+        .filter((filter: FilterType) => filter.tags.includes(RECOMMENDED_TAG_ID));
+
+    return recommendedFilters;
+};
+
+export const fetchFiltersText = async (filters: FilterType[]) => {
+    const urlList = filters.map(
         (filter: FilterType) => filter.subscriptionUrl,
     );
 
-    const filters = await Promise.all(
+    const filtersText = await Promise.all(
         urlList.map(async (url: string) => {
             const text = await textFromResponse(url);
             return text;
         }),
     );
 
-    return filters;
+    return filtersText;
+};
+
+export const fetchFilterNames = async (filters: FilterType[]) => {
+    const nameList = filters.map(
+        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
+    );
+
+    return nameList;
 };

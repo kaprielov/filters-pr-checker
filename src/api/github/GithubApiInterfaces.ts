@@ -9,6 +9,9 @@ export interface GetPullRequestParams {
     owner: string,
     repo: string,
     pullNumber: number,
+    mediaType: {
+        format: string,
+    },
 }
 
 export type GetFilesParams = GetPullRequestParams;
