@@ -6,7 +6,7 @@ import {
     RECOMMENDED_TAG_ID,
 } from './constants';
 
-const textFromResponse = async (url: string) => {
+const dataFromResponse = async (url: string) => {
     try {
         const response = await axios.get(url);
         return response.data;
@@ -20,8 +20,7 @@ const textFromResponse = async (url: string) => {
 
 // Filters by ids. If no ids, return recommended filters
 export const fetchTargetFilters = async (id: string[] | undefined) => {
-    const data = await textFromResponse(FILTER_LIST_URL);
-    const json: FilterListType = JSON.parse(data);
+    const json: FilterListType = await dataFromResponse(FILTER_LIST_URL);
     if (id) {
         const targetFilters = json.filters
             .filter((filter: FilterType) => id.includes(filter.filterId.toString()));
@@ -41,7 +40,7 @@ export const fetchFiltersText = async (filters: FilterType[]) => {
 
     const filtersText = await Promise.all(
         urlList.map(async (url: string) => {
-            const text = await textFromResponse(url);
+            const text = await dataFromResponse(url);
             return text;
         }),
     );
