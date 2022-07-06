@@ -1,4 +1,4 @@
-import fetch, { Response } from 'node-fetch';
+import axios from 'axios';
 import {
     FilterListType,
     FilterType,
@@ -6,16 +6,19 @@ import {
     RECOMMENDED_TAG_ID,
 } from './constants';
 
-const fetchResponse = async (url: string): Promise<Response> => {
-    const response = await fetch(url);
-    if (!response.ok) {
-        const message = `Error status: ${response.status}. URL: ${url}`;
-        throw new Error(message);
+const fetchResponse = async (url: string) => {
+    try {
+        const response = await axios.get('/user?ID=12345');
+        return response.data;
+    } catch (error) {
+        const message = `Error status: ${error}. URL: ${url}`;
+        // eslint-disable-next-line no-console
+        console.log(message);
+        throw error;
     }
-    return response;
 };
 
-const textFromResponse = async (url: string): Promise<string> => {
+const textFromResponse = async (url: string) => {
     const response = await fetchResponse(url);
     const text = await response.text();
     return text;
