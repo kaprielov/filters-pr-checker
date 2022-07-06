@@ -6,7 +6,7 @@ import {
     RECOMMENDED_TAG_ID,
 } from './constants';
 
-const fetchResponse = async (url: string) => {
+const textFromResponse = async (url: string) => {
     try {
         const response = await axios.get(url);
         return response.data;
@@ -16,13 +16,6 @@ const fetchResponse = async (url: string) => {
         console.log(message);
         throw error;
     }
-};
-
-const textFromResponse = async (url: string) => {
-    const response = await fetchResponse(url);
-    console.log('my_response', response);
-    const text = await response.text();
-    return text;
 };
 
 // Filters by ids. If no ids, return recommended filters
