@@ -33,7 +33,7 @@ class GithubApi {
             owner,
             repo,
             pull_number: pullNumber,
-            mediaType,
+            mediaType: mediaType || { format: 'sha' },
         });
     };
 

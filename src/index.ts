@@ -9,7 +9,6 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FilterNamesType,
-    MEDIA_TYPE_SHA,
     MEDIA_TYPE_DIFF,
 } from './constants';
 import { github, imgur } from './api';
@@ -44,9 +43,6 @@ const run = async () => {
         owner,
         repo,
         pullNumber,
-        mediaType: {
-            format: MEDIA_TYPE_SHA,
-        },
     });
 
     if (!prInfo.body) {

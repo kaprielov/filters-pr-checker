@@ -20,7 +20,6 @@ export const FILTER_LIST_URL = 'https://filters.adtidy.org/extension/chromium/fi
 export const HYPHEN_MINUS = '-';
 export const PLUS_SIGN = '+';
 
-export const MEDIA_TYPE_SHA = 'sha';
 export const MEDIA_TYPE_DIFF = 'diff';
 
 export type FilterType = {
