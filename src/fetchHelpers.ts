@@ -20,6 +20,7 @@ const fetchResponse = async (url: string) => {
 
 const textFromResponse = async (url: string) => {
     const response = await fetchResponse(url);
+    console.log('my_response', response);
     const text = await response.text();
     return text;
 };
