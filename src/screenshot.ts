@@ -5,8 +5,7 @@ interface ScreenshotOptions {
     path: string,
 }
 
-export const screenshot = async (context: Context, { url, path }: ScreenshotOptions)
-    :Promise<Buffer> => {
+export const screenshot = async (context: Context, { url, path }: ScreenshotOptions) => {
     const page = await context.browserContext.newPage();
     await page.goto(url);
 
