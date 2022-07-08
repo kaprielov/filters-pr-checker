@@ -22,7 +22,6 @@ export const PLUS_SIGN = '+';
 
 export const MEDIA_TYPE_SHA = 'sha';
 export const MEDIA_TYPE_DIFF = 'diff';
-export const MEDIA_TYPE_RAW = 'raw';
 
 export type FilterType = {
     filterId: number,
@@ -55,19 +54,4 @@ export type FilterListType = {
 export type FilterNamesType = {
     name: string,
     url: string,
-};
-
-export type GetPullRequestRequestType = {
-    body: string | null,
-    diffUrl: string,
-    head: {
-        owner: string,
-        repo: string,
-        sha: string,
-    },
-    base: {
-        owner: string,
-        repo: string,
-        sha: string,
-    },
 };
