@@ -21,8 +21,8 @@ Add IMGUR_CLIENT_ID in the repository secrets. Action requires it in order to pu
 ### Pull Request description
 Description should contain string with website url 
 `#url: https://example.org`
-Specify a list of filters (optional). By default, rules are taken from modified files.
-`#filters: tests/filter.txt; tests/filter2.txt`
+Specify a list of filter Ids (optional). By default, all recommended filters are applied.
+`#filters: 1; 2`
 
 ## TODO
 - [ ] Publish tswebextension to npm and remove ./tswebextension directory

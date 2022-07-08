@@ -9,15 +9,14 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FilterNamesType,
-    MEDIA_TYPE_SHA,
     MEDIA_TYPE_DIFF,
+    FilterType,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './strings';
 import {
     fetchTargetFilters,
     fetchFiltersText,
-    fetchFilterNames,
 } from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -28,7 +27,7 @@ const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
 
-const setMessage = (result: string) => {
+const setMessage = (result: string): string => {
     return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
 };
 
@@ -39,14 +38,11 @@ const setMessage = (result: string) => {
  * - makes screenshot after.jpg
  * - appends screenshots in comment to current pr
  */
-const run = async () => {
+const run = async (): Promise<void> => {
     const prInfo = await github.getPullRequest({
         owner,
         repo,
         pullNumber,
-        mediaType: {
-            format: MEDIA_TYPE_SHA,
-        },
     });
 
     if (!prInfo.body) {
@@ -104,12 +100,14 @@ const run = async () => {
         imgur.upload(headScreenshot),
     ]);
 
-    const printFilesList = (files: FilterNamesType[]) => {
+    const printFilesList = (files: FilterNamesType[]): string => {
         return files.map((filer) => `  * [${filer.name}](${filer.url})\r\n`).join('');
     };
 
     // Filter names with urls, used to print in a comment
-    const filterNames = await fetchFilterNames(targetFilters);
+    const filterNames = targetFilters.map(
+        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
+    );
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
 * The page URL: \`${url}\`
@@ -144,7 +142,7 @@ const run = async () => {
     });
 };
 
-(async () => {
+(async (): Promise<void> => {
     try {
         await run();
     } catch (e) {

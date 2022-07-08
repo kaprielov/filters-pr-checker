@@ -50,11 +50,3 @@ export const fetchFiltersText = async (filters: FilterType[]): Promise<FilterLis
 
     return filtersText;
 };
-
-export const fetchFilterNames = async (filters: FilterType[]) => {
-    const nameList = filters.map(
-        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
-    );
-
-    return nameList;
-};
