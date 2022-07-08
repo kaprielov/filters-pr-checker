@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig, Method } from 'axios';
+import axios, { AxiosRequestConfig, Method, AxiosResponse } from 'axios';
 import * as core from '@actions/core';
 import FormData from 'form-data';
 
@@ -11,8 +11,14 @@ export class ImgurApi {
         this.clientId = core.getInput('imgur_client_id', { required: true });
     }
 
-    async makeRequest(url: string, method: Method, options: AxiosRequestConfig) {
+    async makeRequest(url: string, method: Method, options: AxiosRequestConfig):
+        Promise<AxiosResponse> {
         try {
+            console.log('my__makeRequest', await axios({
+                url: this.IMGUR_URL + url,
+                method,
+                ...options,
+            }));
             return await axios({
                 url: this.IMGUR_URL + url,
                 method,
