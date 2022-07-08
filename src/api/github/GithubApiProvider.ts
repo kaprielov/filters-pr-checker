@@ -1,16 +1,20 @@
 import _ from 'lodash';
+import { GetPullRequestRequestType } from '../../constants';
 
 import { githubApi } from './GithubApi';
 import {
     CreateCommentParams,
+    CreateCommentResponse,
     GetContentParams,
+    GetContentResponse,
     GetFilesParams,
     GetPullRequestParams,
+    GetPullRequestResponse,
 } from './GithubApiInterfaces';
 
 class GithubApiProvider {
     // eslint-disable-next-line class-methods-use-this
-    async getPullRequest(params: GetPullRequestParams) {
+    async getPullRequest(params: GetPullRequestParams): Promise<GetPullRequestRequestType> {
         const response = await githubApi.getPullRequest(params);
 
         if (response.status !== 200) {
@@ -36,7 +40,7 @@ class GithubApiProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getPullRequestDiff(params: GetPullRequestParams) {
+    async getPullRequestDiff(params: GetPullRequestParams): Promise<GetPullRequestResponse['data']> {
         const response = await githubApi.getPullRequest(params);
 
         if (response.status !== 200) {
@@ -49,7 +53,7 @@ class GithubApiProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getPullRequestFiles(params: GetFilesParams) {
+    async getPullRequestFiles(params: GetFilesParams): Promise<string[]> {
         const response = await githubApi.getPullRequestFiles(params);
 
         if (response.status !== 200) {
@@ -63,7 +67,7 @@ class GithubApiProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async getContent(params: GetContentParams) {
+    async getContent(params: GetContentParams): Promise<GetContentResponse['data']> {
         const response = await githubApi.getContent(params);
 
         if (response.status !== 200) {
@@ -74,7 +78,7 @@ class GithubApiProvider {
     }
 
     // eslint-disable-next-line class-methods-use-this
-    async createComment(params: CreateCommentParams) {
+    async createComment(params: CreateCommentParams): Promise<CreateCommentResponse['data']> {
         const response = await githubApi.createComment(params);
 
         return response.data;

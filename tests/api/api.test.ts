@@ -40,10 +40,6 @@ describe('api', () => {
                 owner: 'test',
                 repo: 'test',
                 pullNumber: 1,
-                mediaType:
-                    {
-                        format: 'sha',
-                    },
             });
             expect(pullRequestData).toEqual({
                 head: {
