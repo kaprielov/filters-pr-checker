@@ -11,13 +11,13 @@ import {
     FilterNamesType,
     MEDIA_TYPE_SHA,
     MEDIA_TYPE_DIFF,
-    FilterType,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './strings';
 import {
     fetchTargetFilters,
     fetchFiltersText,
+    fetchFilterNames,
 } from './fetchHelpers';
 import { screenshot } from './screenshot';
 import { extension } from './extension';
@@ -109,9 +109,7 @@ const run = async () => {
     };
 
     // Filter names with urls, used to print in a comment
-    const filterNames = targetFilters.map(
-        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
-    );
+    const filterNames = await fetchFilterNames(targetFilters);
 
     const success = `This PR has been checked by the [filters-pr-checker](${LINK_TO_THE_RUN}).
 * The page URL: \`${url}\`
