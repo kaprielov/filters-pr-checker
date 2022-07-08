@@ -11,6 +11,7 @@ import {
     FilterNamesType,
     MEDIA_TYPE_DIFF,
     FilterType,
+    MEDIA_TYPE_SHA,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './strings';
@@ -43,6 +44,9 @@ const run = async (): Promise<void> => {
         owner,
         repo,
         pullNumber,
+        mediaType: {
+            format: MEDIA_TYPE_SHA,
+        },
     });
 
     if (!prInfo.body) {
