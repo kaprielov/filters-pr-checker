@@ -1,4 +1,4 @@
-import axios from 'axios';
+import fetch, { Response } from 'node-fetch';
 import {
     FilterListType,
     FilterType,
@@ -6,27 +6,28 @@ import {
     RECOMMENDED_TAG_ID,
 } from './constants';
 
-const fetchData = async (url: string): Promise<FilterListType> => {
-    try {
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        const message = `Error status: ${error}. URL: ${url}`;
-        // eslint-disable-next-line no-console
-        console.log(message);
-        throw error;
+const fetchResponse = async (url: string): Promise<Response> => {
+    const response = await fetch(url);
+    if (!response.ok) {
+        const message = `Error status: ${response.status}. URL: ${url}`;
+        throw new Error(message);
     }
+    return response;
 };
 
-/**
- * Filters by ids. If no ids, returns recommended filters
- * @param idList
- */
-export const fetchTargetFilters = async (idList?: string[]): Promise<FilterType[]> => {
-    const json: FilterListType = await fetchData(FILTER_LIST_URL);
-    if (idList) {
+const textFromResponse = async (url: string): Promise<string> => {
+    const response = await fetchResponse(url);
+    const text = await response.text();
+    return text;
+};
+
+// Filters by ids. If no ids, return recommended filters
+export const fetchTargetFilters = async (id: string[] | undefined) => {
+    const data = await textFromResponse(FILTER_LIST_URL);
+    const json: FilterListType = JSON.parse(data);
+    if (id) {
         const targetFilters = json.filters
-            .filter((filter: FilterType) => idList.includes(filter.filterId.toString()));
+            .filter((filter: FilterType) => id.includes(filter.filterId.toString()));
         return targetFilters;
     }
 
@@ -36,14 +37,14 @@ export const fetchTargetFilters = async (idList?: string[]): Promise<FilterType[
     return recommendedFilters;
 };
 
-export const fetchFiltersText = async (filters: FilterType[]): Promise<FilterListType[]> => {
+export const fetchFiltersText = async (filters: FilterType[]) => {
     const urlList = filters.map(
         (filter: FilterType) => filter.subscriptionUrl,
     );
 
     const filtersText = await Promise.all(
         urlList.map(async (url: string) => {
-            const text = await fetchData(url);
+            const text = await textFromResponse(url);
             return text;
         }),
     );
