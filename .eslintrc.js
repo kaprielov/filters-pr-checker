@@ -23,6 +23,5 @@ module.exports = {
         '@typescript-eslint/indent': 0,
         'arrow-body-style': 0,
         '@typescript-eslint/no-shadow': 0,
-        '@typescript-eslint/explicit-function-return-type': ['error'],
     },
 };

@@ -9,9 +9,9 @@ import {
     BASE_ERROR_MESSAGE,
     FILTER_LIST_MARK,
     FilterNamesType,
+    MEDIA_TYPE_SHA,
     MEDIA_TYPE_DIFF,
     FilterType,
-    MEDIA_TYPE_SHA,
 } from './constants';
 import { github, imgur } from './api';
 import { getStringFromDescription, applyDiffToString } from './strings';
@@ -28,7 +28,7 @@ const pullNumber = gh.context.payload.number;
 
 const LINK_TO_THE_RUN = `https://github.com/${owner}/${repo}/actions/runs/${runId}`;
 
-const setMessage = (result: string): string => {
+const setMessage = (result: string) => {
     return `Checked by the [filters-pr-checker](${LINK_TO_THE_RUN}) \r\n${result}`;
 };
 
@@ -39,7 +39,7 @@ const setMessage = (result: string): string => {
  * - makes screenshot after.jpg
  * - appends screenshots in comment to current pr
  */
-const run = async (): Promise<void> => {
+const run = async () => {
     const prInfo = await github.getPullRequest({
         owner,
         repo,
@@ -104,7 +104,7 @@ const run = async (): Promise<void> => {
         imgur.upload(headScreenshot),
     ]);
 
-    const printFilesList = (files: FilterNamesType[]): string => {
+    const printFilesList = (files: FilterNamesType[]) => {
         return files.map((filer) => `  * [${filer.name}](${filer.url})\r\n`).join('');
     };
 
@@ -146,7 +146,7 @@ const run = async (): Promise<void> => {
     });
 };
 
-(async (): Promise<void> => {
+(async () => {
     try {
         await run();
     } catch (e) {
