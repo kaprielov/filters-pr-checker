@@ -1,6 +1,7 @@
 import * as core from '@actions/core';
 import * as github from '@actions/github';
 import { GitHub } from '@actions/github/lib/utils';
+import { MEDIA_TYPE_SHA, MEDIA_TYPE_RAW } from '../../constants';
 
 import {
     CreateCommentParams,
@@ -33,7 +34,7 @@ class GithubApi {
             owner,
             repo,
             pull_number: pullNumber,
-            mediaType,
+            mediaType: mediaType || { format: MEDIA_TYPE_SHA },
         });
     };
 
@@ -58,7 +59,7 @@ class GithubApi {
             repo,
             path,
             ref,
-            mediaType: { format: 'raw' },
+            mediaType: { format: MEDIA_TYPE_RAW },
         });
     };
 
@@ -73,7 +74,7 @@ class GithubApi {
             repo,
             body,
             issue_number: issueNumber,
-            mediaType: { format: 'raw' },
+            mediaType: { format: MEDIA_TYPE_RAW },
         });
     };
 }

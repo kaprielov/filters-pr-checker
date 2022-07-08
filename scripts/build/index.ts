@@ -6,7 +6,7 @@ import path from 'path';
 import { buildRunner } from './build-runner';
 import { config } from './webpack.config';
 
-const build = async () => {
+const build = async (): Promise<void> => {
     try {
         await buildRunner(config);
         await copyWar(path.resolve(__dirname, '../../dist/extension/war'));
