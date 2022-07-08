@@ -14,11 +14,6 @@ export class ImgurApi {
     async makeRequest(url: string, method: Method, options: AxiosRequestConfig):
         Promise<AxiosResponse> {
         try {
-            console.log('my__makeRequest', await axios({
-                url: this.IMGUR_URL + url,
-                method,
-                ...options,
-            }));
             return await axios({
                 url: this.IMGUR_URL + url,
                 method,
