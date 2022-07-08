@@ -15,7 +15,7 @@ export const getStringFromDescription = (desc: string, key: string): string | nu
 };
 
 // Applies the pull request diff to the filters
-export const applyDiffToString = (diff: string, string: string) => {
+export const applyDiffToString = (diff: string, string: string): string => {
     const diffLines = diff.split('\n\r');
     const stringLines = string.split('\n');
 

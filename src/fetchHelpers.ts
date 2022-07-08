@@ -6,7 +6,7 @@ import {
     RECOMMENDED_TAG_ID,
 } from './constants';
 
-const dataFromResponse = async (url: string) => {
+const fetchData = async (url: string): Promise<FilterListType> => {
     try {
         const response = await axios.get(url);
         return response.data;
@@ -18,12 +18,15 @@ const dataFromResponse = async (url: string) => {
     }
 };
 
-// Filters by ids. If no ids, return recommended filters
-export const fetchTargetFilters = async (id: string[] | undefined) => {
-    const json: FilterListType = await dataFromResponse(FILTER_LIST_URL);
-    if (id) {
+/**
+ * Filters by ids. If no ids, returns recommended filters
+ * @param idList
+ */
+export const fetchTargetFilters = async (idList?: string[]): Promise<FilterType[]> => {
+    const json: FilterListType = await fetchData(FILTER_LIST_URL);
+    if (idList) {
         const targetFilters = json.filters
-            .filter((filter: FilterType) => id.includes(filter.filterId.toString()));
+            .filter((filter: FilterType) => idList.includes(filter.filterId.toString()));
         return targetFilters;
     }
 
@@ -33,25 +36,17 @@ export const fetchTargetFilters = async (id: string[] | undefined) => {
     return recommendedFilters;
 };
 
-export const fetchFiltersText = async (filters: FilterType[]) => {
+export const fetchFiltersText = async (filters: FilterType[]): Promise<FilterListType[]> => {
     const urlList = filters.map(
         (filter: FilterType) => filter.subscriptionUrl,
     );
 
     const filtersText = await Promise.all(
         urlList.map(async (url: string) => {
-            const text = await dataFromResponse(url);
+            const text = await fetchData(url);
             return text;
         }),
     );
 
     return filtersText;
-};
-
-export const fetchFilterNames = async (filters: FilterType[]) => {
-    const nameList = filters.map(
-        (filter: FilterType) => ({ name: filter.name, url: filter.subscriptionUrl }),
-    );
-
-    return nameList;
 };

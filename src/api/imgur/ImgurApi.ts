@@ -11,8 +11,14 @@ export class ImgurApi {
         this.clientId = core.getInput('imgur_client_id', { required: true });
     }
 
-    async makeRequest(url: string, method: Method, options: AxiosRequestConfig) {
+    async makeRequest(url: string, method: Method, options: AxiosRequestConfig):
+        Promise<any> {
         try {
+            console.log(await axios({
+                url: this.IMGUR_URL + url,
+                method,
+                ...options,
+            }));
             return await axios({
                 url: this.IMGUR_URL + url,
                 method,
