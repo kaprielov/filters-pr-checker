@@ -20,7 +20,7 @@ Add IMGUR_CLIENT_ID in the repository secrets. Action requires it in order to pu
 
 ### Pull Request description
 1. Description must contain url of the site on which the check will be run. It is made with marker `#url`, e.g `#url: example.org`. This flag is required, otherwise filters-pr-check will generate an error.
-2. Description can contain filter ids which would be used for the check. They can be specified after `#id:` marker, e.g: `#id: 1, 2`. This flag is optional, by default the checker will get all filters with recommended tags.
+2. Description can contain filter ids which would be used for the check. They can be specified after `#id:` marker, e.g: `#filters: 1, 2`. This flag is optional, by default the checker will get all filters with recommended tags.
 
 Full description example:
 ```
