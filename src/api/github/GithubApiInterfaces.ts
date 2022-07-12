@@ -9,7 +9,7 @@ export interface GetPullRequestParams {
     owner: string,
     repo: string,
     pullNumber: number,
-    mediaType: {
+    mediaType?: {
         format: string,
     },
 }

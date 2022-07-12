@@ -8,7 +8,7 @@ export interface Context {
     backgroundPage: Page,
 }
 
-const start = async () => {
+const start = async (): Promise<Context> => {
     const userDataDir = '/tmp/test-user-data-dir';
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
         headless: false,
@@ -35,7 +35,7 @@ const start = async () => {
     };
 };
 
-const config = async (context: Context, rulesText: string) => {
+const config = async (context: Context, rulesText: string): Promise<void> => {
     await context.backgroundPage.evaluate(async (rulesText: string) => {
         await window.tsWebExtension.configure(Object.assign(window.tsWebExtension.configuration, {
             filters: [{

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import webpack, { Configuration, Stats } from 'webpack';
+import webpack, { Configuration, Stats, Watching } from 'webpack';
 
 declare interface CallbackFunction<T> {
     (err?: null | Error, result?: T): unknown;
@@ -11,8 +11,8 @@ export const buildRunner = (webpackConfig: Configuration, watch = false): Promis
     console.log(compiler.options.context);
 
     const run = watch
-        ? (cb: CallbackFunction<Stats>) => compiler.watch({}, cb)
-        : (cb: CallbackFunction<Stats>) => compiler.run(cb);
+        ? (cb: CallbackFunction<Stats>): Watching => compiler.watch({}, cb)
+        : (cb: CallbackFunction<Stats>): void => compiler.run(cb);
 
     return new Promise((resolve, reject) => {
         run((err, stats) => {
